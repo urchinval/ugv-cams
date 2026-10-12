@@ -76,6 +76,7 @@ export function CameraGrid(p: CameraGridProps) {
                 isPrimary={cam.id === biggest}
                 maximized={p.maximized === cam.id}
                 editing={p.editing}
+                debug={p.debug}
                 onStreamChange={(s) => p.onStreamChange(cam.id, s)}
                 onMakePrimary={() => p.onMakePrimary(cam.id)}
                 onToggleMax={() => p.onToggleMax(cam.id)}

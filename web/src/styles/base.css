@@ -187,3 +187,7 @@ input {
   box-shadow: 0 4px 16px rgb(0 0 0 / 0.5);
   cursor: pointer;
 }
+
+.icon-btn.is-active {
+  color: var(--c-accent);
+}

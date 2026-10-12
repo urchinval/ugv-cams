@@ -45,6 +45,12 @@ export const IconLayout = () => (
     <path d="M9 2.5v11M9 8h5" />
   </Icon>
 );
+/** pulse line: video diagnostics */
+export const IconDebug = () => (
+  <Icon>
+    <path d="M1.5 8.5h3l1.5-4 2.5 8 1.5-4h4.5" />
+  </Icon>
+);
 export const IconFullscreen = () => (
   <Icon>
     <path d="M2.5 5.5v-3h3M10.5 2.5h3v3M13.5 10.5v3h-3M5.5 13.5h-3v-3" />

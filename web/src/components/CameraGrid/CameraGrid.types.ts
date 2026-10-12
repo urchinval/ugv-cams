@@ -6,6 +6,7 @@ export interface CameraGridProps {
   streams: Record<string, StreamKind>;
   webrtcBase: string;
   editing: boolean;
+  debug: boolean;
   maximized: string | null;
   onLayoutChange: (l: Layout) => void;
   onLayoutCommit: (l: Layout) => void;

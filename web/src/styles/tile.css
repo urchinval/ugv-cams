@@ -123,3 +123,25 @@
 .tile.is-editing .tile-video {
   opacity: 0.75;
 }
+
+/* ---------- debug stats (toolbar toggle) ---------- */
+/* top-right: the only corner free of label (top-left), controls and reconnect status (bottom) */
+.tile-stats {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  max-width: calc(100% - 16px);
+  padding: 4px 7px;
+  border-radius: var(--r-sm);
+  background: rgb(0 0 0 / 0.72);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  pointer-events: none;
+}
+.tile-stats .is-warn {
+  color: var(--c-accent);
+}

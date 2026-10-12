@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { availableStreams } from '@ugv/shared';
+import { availableStreams, playPath } from '@ugv/shared';
 import { useWhepStream } from '../../hooks/useWhepStream.ts';
 import { whepUrl } from '../../lib/whep.ts';
+import { StatsOverlay } from '../StatsOverlay/StatsOverlay.tsx';
 import { StreamSwitch } from '../StreamSwitch/StreamSwitch.tsx';
 import { IconCollapse, IconExpand, IconPrimary, IconReload } from '../Icons/Icons.tsx';
 import type { CameraTileProps } from './CameraTile.types.ts';
@@ -12,8 +13,9 @@ import type { CameraTileProps } from './CameraTile.types.ts';
  */
 export function CameraTile(p: CameraTileProps) {
   const [reloadNonce, setReloadNonce] = useState(0);
-  const { stream, status } = useWhepStream(
+  const { stream, status, stats } = useWhepStream(
     whepUrl(p.webrtcBase, p.camera.id, p.stream, reloadNonce),
+    p.debug,
   );
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -51,6 +53,8 @@ export function CameraTile(p: CameraTileProps) {
       )}
 
       <div className="tile-label">{p.camera.label}</div>
+
+      {p.debug && <StatsOverlay path={playPath(p.camera.id, p.stream)} stats={stats} />}
 
       <div className="tile-controls" onDoubleClick={(e) => e.stopPropagation()}>
         <StreamSwitch

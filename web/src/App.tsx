@@ -13,11 +13,13 @@ import { ModelEditor } from './components/ModelEditor/ModelEditor.tsx';
 import { ModelPicker } from './components/ModelPicker/ModelPicker.tsx';
 import { Notice } from './components/Notice/Notice.tsx';
 import { Toolbar } from './components/Toolbar/Toolbar.tsx';
+import { useStoredFlag } from './hooks/useStoredFlag.ts';
 
 type EditorState = { open: false } | { open: true; model: Model | null };
 
 const INIT_RETRY_MS = 3000;
 const NOTICE_MS = 8000;
+const DEBUG_STORAGE_KEY = 'ugv-cams.debugOverlay';
 
 export function App() {
   const [info, setInfo] = useState<ServerInfo | null>(null);
@@ -28,6 +30,8 @@ export function App() {
   /** Not persisted on purpose: every load / model switch starts on sub. */
   const [streams, setStreams] = useState<Record<string, StreamKind>>({});
   const [editing, setEditing] = useState(false);
+  /** Video stats over every tile; a developer tool, remembered in this browser. */
+  const [debug, toggleDebug] = useStoredFlag(DEBUG_STORAGE_KEY);
   const [maximized, setMaximized] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [editor, setEditor] = useState<EditorState>({ open: false });
@@ -150,8 +154,10 @@ export function App() {
       <Toolbar
         model={model}
         editing={editing}
+        debug={debug}
         onPickModel={() => setPickerOpen(true)}
         onToggleEditing={() => setEditing((e) => !e)}
+        onToggleDebug={toggleDebug}
         onResetLayout={() => resetLayout().catch(report)}
         onFullscreen={toggleFullscreen}
       />
@@ -163,6 +169,7 @@ export function App() {
           streams={streams}
           webrtcBase={webrtcBase}
           editing={editing}
+          debug={debug}
           maximized={maximized}
           onLayoutChange={setLayout}
           onLayoutCommit={commitLayout}

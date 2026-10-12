@@ -11,8 +11,14 @@
  */
 
 import { playPath, type StreamKind } from '@ugv/shared';
+import { VideoStatsSampler, type VideoStats } from './videoStats.ts';
 
 export type WhepState = 'connecting' | 'playing' | 'retrying' | 'closed';
+
+export interface WhepStats extends VideoStats {
+  /** reconnects since this reader was created (i.e. since the stream was opened) */
+  reconnects: number;
+}
 
 /** MediaMTX WHEP endpoint of a camera stream. `nonce` forces a new URL (manual reconnect). */
 export function whepUrl(base: string, cameraId: string, stream: StreamKind, nonce = 0): string {
@@ -22,13 +28,16 @@ export function whepUrl(base: string, cameraId: string, stream: StreamKind, nonc
 export interface WhepCallbacks {
   onTrack: (stream: MediaStream) => void;
   onState: (state: WhepState, detail?: string) => void;
+  /** every watchdog tick while a session is up (debug overlay) */
+  onStats?: (stats: WhepStats) => void;
 }
 
 const BACKOFF_MS = [1000, 2000, 3000, 5000];
 const ICE_GATHER_TIMEOUT_MS = 2000;
 /** Longer than runOnDemandStartTimeout (20 s), so MediaMTX's own "no stream" answer comes first. */
 const WHEP_REQUEST_TIMEOUT_MS = 25_000;
-const WATCHDOG_TICK_MS = 2000;
+/** also the refresh rate of the debug numbers; thresholds below are in ms, not ticks */
+const WATCHDOG_TICK_MS = 1000;
 const FIRST_FRAME_TIMEOUT_MS = 10_000;
 const STALL_AFTER_MS = 6000;
 const DISCONNECT_GRACE_MS = 3000;
@@ -38,6 +47,7 @@ export class WhepReader {
   private sessionUrl: string | null = null;
   private closed = false;
   private attempt = 0;
+  private reconnects = 0;
   private retryTimer: number | null = null;
   private watchdogTimer: number | null = null;
   private abort: AbortController | null = null;
@@ -141,21 +151,20 @@ export class WhepReader {
    */
   private startWatchdog(pc: RTCPeerConnection): void {
     this.stopWatchdog();
+    const sampler = new VideoStatsSampler();
     let frames = 0;
     let lastChange = performance.now();
     this.watchdogTimer = window.setInterval(async () => {
       if (this.pc !== pc) return;
-      let decoded = 0;
+      let stats: VideoStats | null = null;
       try {
-        const stats = await pc.getStats();
-        stats.forEach((s) => {
-          if (s.type === 'inbound-rtp' && s.kind === 'video')
-            decoded = (s as { framesDecoded?: number }).framesDecoded ?? 0;
-        });
+        stats = sampler.sample(await pc.getStats(), performance.now());
       } catch {
         /* closed mid-call: counts as no progress */
       }
       if (this.pc !== pc) return;
+      if (stats) this.cb.onStats?.({ ...stats, reconnects: this.reconnects });
+      const decoded = stats?.framesDecoded ?? 0;
       const t = performance.now();
       if (decoded > frames) {
         frames = decoded;
@@ -180,6 +189,7 @@ export class WhepReader {
     this.teardown();
     const delay = BACKOFF_MS[Math.min(this.attempt, BACKOFF_MS.length - 1)]!;
     this.attempt++;
+    this.reconnects++;
     this.cb.onState('retrying', reason);
     this.retryTimer = window.setTimeout(() => {
       this.retryTimer = null;

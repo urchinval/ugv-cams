@@ -59,7 +59,10 @@ export function renderMediamtxConfig(model: Model | null, o: RenderOptions): str
     logDestinations: ['stdout'],
     readTimeout: '10s',
     writeTimeout: '10s',
-    writeQueueSize: 1024,
+    // Per-reader packet queue (power of two). After a Starlink stall the camera's backlog arrives as
+    // one burst; a short queue overflows and drops packets -> smeared picture until the next I-frame.
+    // It only fills while a reader is behind, so a bigger one adds no latency in normal operation.
+    writeQueueSize: 4096,
 
     api: true,
     apiAddress: `127.0.0.1:${o.apiPort}`,
@@ -69,6 +72,7 @@ export function renderMediamtxConfig(model: Model | null, o: RenderOptions): str
     rtmp: false,
     hls: false,
     srt: false,
+    moq: false, // on by default since MediaMTX 1.17: extra ports + self-signed cert, unused here
 
     webrtc: true,
     webrtcAddress: `:${o.webrtcPort}`,

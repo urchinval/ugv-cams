@@ -1,4 +1,4 @@
-import { IconChevron, IconFullscreen, IconLayout } from '../Icons/Icons.tsx';
+import { IconChevron, IconDebug, IconFullscreen, IconLayout } from '../Icons/Icons.tsx';
 import type { ToolbarProps } from './Toolbar.types.ts';
 
 /** Thin strip above the video wall; dimmed until hovered so it does not compete with video. */
@@ -31,6 +31,17 @@ export function Toolbar(p: ToolbarProps) {
           >
             <IconLayout />
             {p.editing ? 'Готово' : 'Розкладка'}
+          </button>
+        )}
+        {p.model && (
+          <button
+            type="button"
+            className={`icon-btn${p.debug ? ' is-active' : ''}`}
+            aria-pressed={p.debug}
+            title="Діагностика відео: fps, бітрейт, втрати, фризи (для налагодження)"
+            onClick={p.onToggleDebug}
+          >
+            <IconDebug />
           </button>
         )}
         <button

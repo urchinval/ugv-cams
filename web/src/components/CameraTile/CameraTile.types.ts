@@ -7,6 +7,8 @@ export interface CameraTileProps {
   isPrimary: boolean;
   maximized: boolean;
   editing: boolean;
+  /** show the debug stats overlay */
+  debug: boolean;
   onStreamChange: (s: StreamKind) => void;
   onMakePrimary: () => void;
   onToggleMax: () => void;

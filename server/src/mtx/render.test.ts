@@ -72,3 +72,9 @@ test('no model -> valid config with empty paths', () => {
   assert.equal(conf.webrtcAddress, ':8889');
   assert.equal(conf.apiAddress, '127.0.0.1:9997');
 });
+
+test('writeQueueSize is a power of two (MediaMTX refuses to start otherwise)', () => {
+  const { writeQueueSize } = parse(renderMediamtxConfig(null, opts));
+  assert.ok(Number.isInteger(writeQueueSize) && writeQueueSize > 0);
+  assert.equal(writeQueueSize & (writeQueueSize - 1), 0);
+});
