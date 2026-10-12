@@ -1,0 +1,146 @@
+# ugv-cams
+
+Перегляд камер машини на ноуті оператора через WebRTC.
+MediaMTX тягне RTSP з камер через тунель і віддає WebRTC у браузер і RTSP для QGC.
+Локальний Node-бекенд керує MediaMTX і моделями камер, React UI показує сітку плиток.
+
+```
+браузер (React)  ──HTTP /api──►  ugv-cams (Node)  ──пише──►  mediamtx.yml ──hot reload──►  MediaMTX ──RTSP──► камери
+      └──────────────────── WebRTC (WHEP) :8889 ───────────────────────────────────────────────┘
+```
+
+## Для оператора
+
+1. Завантажте `ugv-cams-vX.Y.Z-win-x64.zip` з розділу **Releases** цього репозиторію.
+2. Розпакуйте в будь-яку папку (наприклад `C:\ugv-cams`). Встановлювати нічого не треба:
+   Node, MediaMTX і ffmpeg уже всередині.
+3. Подвійний клік по `ugv-cams.cmd`. Відкриється чорне вікно (лог) і браузер з `http://localhost:8080`.
+4. Перший запуск: «Нова модель» → назви й RTSP-адреси камер → «Перевірити» → «Зберегти» → обрати модель.
+   Або «Імпортувати з файлу», якщо модель уже створили на іншому ноуті.
+
+Закрити: закрийте чорне вікно, MediaMTX зупиниться разом з ним.
+Оновлення: видаліть стару папку й розпакуйте нову. Моделі й розкладки лежать окремо (див. нижче) і не зачіпаються.
+
+Якщо Windows показує попередження безпеки при запуску: властивості zip → «Розблокувати» → розпакувати заново.
+
+## Поняття
+
+- **Модель** — набір камер конкретної машини. Створюється локально на ноуті в редакторі,
+  містить повні RTSP-URL з логінами й паролями. **Ніколи не потрапляє в git.**
+  Між ноутами переноситься експортом / імпортом файлу `*.ugvcam.json`.
+- **Стріми камери**: `sub` (обовʼязковий, показується за замовчуванням), `main`, `third` (опційні).
+  Обраний стрім не запамʼятовується: після перезавантаження сторінки чи зміни моделі всі плитки знову на `sub`.
+- **Розкладка**: генерується автоматично за кількістю камер, оператор може змінювати розмір плиток,
+  перетягувати їх і робити будь-яку камеру основною. Зберігається окремо для кожної моделі.
+- **Транскод**: для камер з H.265 вмикається прапорець `transcode`, і ffmpeg на ноуті перекодовує потік у H.264.
+
+## Де що лежить на ноуті
+
+| Що | Де |
+|---|---|
+| Програма (замінюється при оновленні) | папка з розпакованого zip |
+| Моделі (з паролями) | `%APPDATA%\ugv-cams\models\*.json` |
+| Активна модель, розкладки | `%APPDATA%\ugv-cams\settings.json` |
+| Згенерований конфіг MediaMTX | `%APPDATA%\ugv-cams\runtime\mediamtx.yml` |
+
+## MediaMTX path names і QGC
+
+`<camera>_<stream>`, наприклад `front_sub`. Той самий шлях можна відкрити в QGC (там лише RTSP, не WebRTC):
+`rtsp://127.0.0.1:8554/front_sub`. Адреси для кожної камери показані внизу її картки в редакторі моделі.
+Для камер з транскодом сирий потік лежить у `<camera>_<stream>_src`.
+
+- Працює, поки запущено ugv-cams, і лише для камер **активної** моделі. Вкладка браузера може бути закрита.
+- Якщо браузер і QGC дивляться той самий потік, через тунель він іде один раз (MediaMTX роздає обом).
+  Різні потоки (`_sub` у браузері, `_main` у QGC) — це два окремі потоки трафіку.
+
+## Порти
+
+| Порт | Що |
+|---|---|
+| 8080 TCP | UI і API ugv-cams (лише `127.0.0.1`) |
+| 8554 TCP | RTSP MediaMTX (для QGC) |
+| 8889 TCP | WebRTC/WHEP MediaMTX (браузер) |
+| 8189 UDP | WebRTC ICE |
+| 9997 TCP | Control API MediaMTX (лише `127.0.0.1`) |
+
+## Проблеми
+
+- **Плитки «MediaMTX не знає цей потік» або в лозі `port is busy`**: працює інший `mediamtx.exe`
+  (старий `start-mediamtx.cmd` або ugv-cams, що впав). Закрийте ugv-cams, виконайте
+  `taskkill /IM mediamtx.exe /F` і запустіть знову.
+- **`Port 8080 is busy`**: ugv-cams уже запущено, просто відкрийте `http://localhost:8080`.
+- **«Перепідключення: камера не відповідає»**: MediaMTX не отримав потік від камери, найчастіше немає звʼязку
+  з машиною. Плитки перепідключаються самі, коли звʼязок повернеться.
+
+## Структура репо
+
+```
+shared/   спільні типи і zod-схеми (модель, розкладка, контракт API), генератор розкладки
+server/   Node + TypeScript + fastify
+  src/config.ts        шляхи, порти (env overrides UGV_*)
+  src/store/           моделі (файл на модель), settings.json
+  src/mtx/             рендер mediamtx.yml, нагляд процесу MediaMTX, читання Control API
+  src/rtsp/probe.ts    кнопка "Перевірити": RTSP DESCRIBE з Digest/Basic, кодеки з SDP
+  src/api/routes.ts    REST API
+web/      React + Vite + TypeScript
+scripts/  fetch-binaries, package (release zip)
+```
+
+## Розробка (Windows)
+
+Потрібен Node.js 22+. Команди npm краще запускати в cmd: у PowerShell npm часто блокує політика скриптів.
+
+```sh
+npm install
+npm run fetch-binaries        # mediamtx.exe, ffmpeg.exe -> bin/, node.exe -> .cache/runtime/
+npm run build                 # UI -> web/dist (без цього :8080 відповідає "UI build not found")
+npm run dev:server            # UI + API на http://localhost:8080, дані в %APPDATA%\ugv-cams (або UGV_DATA_DIR)
+npm run dev:web               # (опційно) UI з hot reload на http://localhost:5173, проксі /api -> :8080
+npm test && npm run typecheck
+```
+
+Без доступу до GitHub замість `fetch-binaries` можна вручну покласти `mediamtx.exe` (і за потреби `ffmpeg.exe`) у `bin/`.
+У dev-режимі браузер не відкривається сам, а дані спільні з zip-версією на тому ж ноуті (`%APPDATA%\ugv-cams`).
+Після змін у UI: `npm run build` і оновити сторінку (або працювати через `dev:web`).
+
+На Linux `fetch-binaries` теж працює (качає Windows-бінарники для пакування), а для локального запуску
+вкажіть свій MediaMTX: `UGV_MEDIAMTX_BIN=/path/to/mediamtx npm run dev:server`.
+
+## Реліз
+
+1. Підніміть `version` у кореневому `package.json`, закомітьте й запуште.
+2. `git tag v0.2.0 && git push origin v0.2.0`. Тег має збігатися з `version`, інакше збірка впаде.
+3. GitHub Actions перевіряє типи й тести, збирає UI і сервер, завантажує закріплені версії
+   MediaMTX, ffmpeg і portable Node (`scripts/versions.json`) і публікує
+   `ugv-cams-vX.Y.Z-win-x64.zip` у Releases.
+
+Пробна збірка без релізу: Actions → release → Run workflow; zip зʼявиться в артефактах запуску.
+На pull request запускаються лише перевірки.
+
+Локально те саме: `npm run build && npm run fetch-binaries && npm run package` → `release/`.
+
+Змінні оточення (`server/src/config.ts`):
+
+| Змінна | За замовчуванням |
+|---|---|
+| `UGV_DATA_DIR` | `%APPDATA%\ugv-cams` |
+| `UGV_HTTP_HOST`, `UGV_HTTP_PORT` | `127.0.0.1`, `8080` |
+| `UGV_MTX_RTSP_PORT`, `UGV_MTX_WEBRTC_PORT`, `UGV_MTX_WEBRTC_UDP_PORT`, `UGV_MTX_API_PORT` | `8554`, `8889`, `8189`, `9997` |
+| `UGV_BIN_DIR` | `bin/` поруч із програмою (у репо: `bin/`) |
+| `UGV_MEDIAMTX_BIN`, `UGV_FFMPEG_BIN` | `<bin>/mediamtx.exe`, `<bin>/ffmpeg.exe` (ffmpeg інакше з `PATH`) |
+| `UGV_WEB_DIR` | `app/web` у zip, `web/dist` у репо |
+| `UGV_NO_BROWSER=1` | не відкривати браузер при запуску zip-версії |
+
+## API
+
+| Метод | Шлях | Опис |
+|---|---|---|
+| GET | `/api/info` | версія, порти MediaMTX, чи знайдено ffmpeg |
+| GET / POST | `/api/models` | список / створити |
+| GET / PUT / DELETE | `/api/models/:id` | модель |
+| GET | `/api/models/:id/export` | файл для перенесення на інший ноут (з паролями) |
+| POST | `/api/models/import` | імпорт (завжди новий id) |
+| GET / PUT | `/api/active` | активна модель `{ modelId }` → перерендер mediamtx.yml |
+| GET / PUT | `/api/models/:id/layout` | розкладка; `{ layout: null }` скидає на авто |
+| GET | `/api/status` | стан MediaMTX і шляхів |
+| POST | `/api/probe` | перевірка RTSP URL `{ url }` |

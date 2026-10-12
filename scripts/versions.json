@@ -1,0 +1,18 @@
+{
+  "$comment": "Pinned third-party binaries for the Windows release. Bump here, CI picks it up. node: 'latest-22' resolves the newest v22.x from nodejs.org at build time, or pin e.g. '22.20.0'.",
+  "mediamtx": {
+    "version": "1.21.1",
+    "url": "https://github.com/bluenviron/mediamtx/releases/download/v{version}/mediamtx_v{version}_windows_amd64.zip",
+    "entry": "mediamtx.exe"
+  },
+  "ffmpeg": {
+    "$comment": "GPL build: libx264 is required for the H.265 -> H.264 transcode",
+    "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-win64-gpl-7.1.zip",
+    "entry": "ffmpeg.exe"
+  },
+  "node": {
+    "version": "latest-22",
+    "url": "https://nodejs.org/dist/v{version}/node-v{version}-win-x64.zip",
+    "entry": "node.exe"
+  }
+}

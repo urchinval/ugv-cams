@@ -1,0 +1,47 @@
+.grid-host {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  /* graphite gaps make tile edges readable even when the video is letterboxed */
+  background: var(--c-bg);
+}
+
+.grid-host .react-grid-layout {
+  height: 100% !important;
+}
+
+.grid-cell {
+  /* react-grid-layout positions this element; the tile fills it */
+  display: flex;
+}
+
+/* drop target while dragging / resizing */
+.grid-host .react-grid-item.react-grid-placeholder {
+  background: var(--c-accent);
+  opacity: 0.18;
+  border-radius: var(--r-sm);
+  transition: none;
+}
+
+/* resize handles: only exist in edit mode, drawn as amber corner ticks */
+.grid-host .react-resizable-handle {
+  z-index: 5;
+  background-image: none;
+}
+.grid-host .react-resizable-handle::after {
+  border-color: var(--c-accent);
+}
+.grid-host .react-resizable-handle-se::after,
+.grid-host .react-resizable-handle-sw::after,
+.grid-host .react-resizable-handle-ne::after,
+.grid-host .react-resizable-handle-nw::after {
+  width: 8px;
+  height: 8px;
+  border-width: 2px;
+}
+
+/* a maximized tile is fixed over everything; keep the rest of the wall below it */
+.grid-host.has-max .react-grid-item {
+  z-index: auto;
+}

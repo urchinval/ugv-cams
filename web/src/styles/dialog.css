@@ -1,0 +1,110 @@
+.dialog {
+  width: min(32rem, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  padding: 0;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: var(--c-panel);
+  color: var(--c-text);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.55);
+}
+.dialog.is-wide {
+  width: min(52rem, calc(100vw - 32px));
+}
+.dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+
+.dialog-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 50px);
+}
+
+.dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 10px 18px;
+  border-bottom: 1px solid var(--c-line);
+}
+.dialog-head h2 {
+  margin: 0;
+  font: 600 var(--fs-lg) / 1.2 var(--font-din);
+  letter-spacing: 0.02em;
+}
+
+.dialog-body {
+  padding: 16px 18px;
+  overflow: auto;
+}
+
+.dialog-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--c-line);
+}
+.dialog-foot .spacer {
+  flex: 1;
+}
+
+/* ---------- model list ---------- */
+.model-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.model-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 6px;
+  border-radius: var(--r-sm);
+}
+.model-list li:hover {
+  background: var(--c-panel-2);
+}
+.model-list li.is-active {
+  box-shadow: inset 3px 0 0 var(--c-accent);
+  background: var(--c-panel-2);
+}
+.model-pick {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.model-name {
+  font-family: var(--font-din);
+  font-size: 16px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.model-meta {
+  flex: none;
+  font-size: var(--fs-xs);
+  color: var(--c-muted);
+}
+
+.form-error {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--c-danger);
+  background: rgb(229 83 75 / 0.12);
+  font-size: var(--fs-sm);
+}

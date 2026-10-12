@@ -1,0 +1,199 @@
+/*
+ * Operator camera wall. Video dominates; chrome is dim graphite with instrument-panel amber
+ * as the single accent (easier on night-adapted eyes than white or blue).
+ * System fonts only — the laptop may have no internet. Bahnschrift (DIN, ships with Windows)
+ * is used for the model plate and camera labels.
+ */
+:root {
+  --c-video: #000000;
+  --c-bg: #1b1f1c;
+  --c-panel: #232825;
+  --c-panel-2: #2b312d;
+  --c-line: #39413b;
+  --c-text: #dde2d8;
+  --c-muted: #8c958d;
+  --c-accent: #e0a526;
+  --c-accent-ink: #1d1600;
+  --c-danger: #e5534b;
+  --c-ok: #86b985;
+
+  --font-ui: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-din: 'Bahnschrift', 'DIN Alternate', 'Roboto Condensed', 'Arial Narrow', sans-serif;
+  --font-mono: 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', monospace;
+
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lg: 18px;
+  --fs-xl: 24px;
+
+  --r-sm: 3px;
+  --r-md: 6px;
+  --toolbar-h: 40px;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--c-video);
+  color: var(--c-text);
+  font: var(--fs-md) / 1.45 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: none;
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.btn-ghost {
+  border-color: var(--c-line);
+  color: var(--c-text);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--c-panel-2);
+}
+.btn-accent {
+  background: var(--c-accent);
+  color: var(--c-accent-ink);
+  font-weight: 600;
+}
+.btn-accent:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.btn-danger {
+  background: var(--c-danger);
+  color: #fff;
+  font-weight: 600;
+}
+.btn-small {
+  height: 26px;
+  padding: 0 10px;
+  font-size: var(--fs-xs);
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--c-text);
+  cursor: pointer;
+}
+.icon-btn:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.1);
+}
+.icon-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.muted {
+  color: var(--c-muted);
+}
+
+/* ---------- empty / error screen ---------- */
+.empty {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  justify-items: start;
+  gap: 12px;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 24px;
+}
+.empty h1 {
+  margin: 0;
+  font: 600 var(--fs-xl) / 1.2 var(--font-din);
+}
+.empty p {
+  margin: 0;
+  color: var(--c-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}
+
+/* failed action (save, model switch, ...): bottom-center, click or wait to dismiss */
+.notice {
+  position: fixed;
+  inset: auto auto 16px 50%;
+  z-index: 50;
+  margin: 0;
+  transform: translateX(-50%);
+  border: 0;
+  color: var(--c-text);
+  max-width: min(36rem, calc(100% - 32px));
+  padding: 8px 12px;
+  border-left: 3px solid var(--c-danger);
+  border-radius: var(--r-sm);
+  background: var(--c-panel-2);
+  font-size: var(--fs-sm);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.5);
+  cursor: pointer;
+}

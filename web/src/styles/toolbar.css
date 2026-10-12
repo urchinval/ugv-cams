@@ -1,0 +1,58 @@
+.toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--toolbar-h);
+  padding: 0 8px 0 10px;
+  background: var(--c-bg);
+  border-bottom: 1px solid var(--c-line);
+  /* recede while watching, come back on intent */
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.toolbar:hover,
+.toolbar:focus-within,
+.toolbar.is-editing {
+  opacity: 1;
+}
+
+/* The model name as a stamped vehicle plate — the one distinctive element of the chrome. */
+.plate {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px 0 10px;
+  border: 1.5px solid var(--c-text);
+  border-radius: var(--r-sm);
+  background: none;
+  cursor: pointer;
+}
+.plate-name {
+  font-family: var(--font-din);
+  font-size: 16px;
+  font-weight: 600;
+  font-variation-settings: 'wdth' 85;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.plate:hover {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+}
+
+.toolbar-hint {
+  font-size: var(--fs-xs);
+  color: var(--c-accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}

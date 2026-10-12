@@ -1,0 +1,30 @@
+{
+  "name": "ugv-cams",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Operator-side camera viewer for UGVs: MediaMTX (RTSP -> WebRTC) + local Node backend + React UI",
+  "workspaces": [
+    "shared",
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev -w server",
+    "dev:web": "npm run dev -w web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "build": "npm run build -w web && npm run build -w server",
+    "fetch-binaries": "node scripts/fetch-binaries.mjs",
+    "package": "node scripts/package.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "adm-zip": "^0.6.1",
+    "esbuild": "^0.28.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

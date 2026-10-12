@@ -1,0 +1,156 @@
+.editor {
+  display: grid;
+  gap: 16px;
+}
+
+/* ---------- fields ---------- */
+.field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.field-label {
+  font-size: var(--fs-xs);
+  color: var(--c-muted);
+}
+.field input {
+  width: 100%;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-sm);
+  background: var(--c-bg);
+}
+.field input:focus {
+  border-color: var(--c-accent);
+  outline: none;
+}
+.field input.has-error {
+  border-color: var(--c-danger);
+}
+.field input.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.field input::placeholder {
+  color: #5f685f;
+}
+.field-error {
+  font-size: var(--fs-xs);
+  color: var(--c-danger);
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.check input {
+  margin-top: 3px;
+  accent-color: var(--c-accent);
+}
+
+/* ---------- camera cards ---------- */
+.cam-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cam-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: var(--c-bg);
+}
+
+.cam-head {
+  display: grid;
+  grid-template-columns: auto 1fr 11rem auto;
+  align-items: start;
+  gap: 10px;
+}
+/* order number = position in the auto layout (1 = primary tile), so it is real information */
+.cam-index {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: 20px;
+  border: 1.5px solid var(--c-muted);
+  border-radius: var(--r-sm);
+  font: 600 var(--fs-md) / 1 var(--font-din);
+  color: var(--c-muted);
+}
+.cam-list > li:first-child .cam-index {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+}
+.cam-order {
+  display: flex;
+  margin-top: 20px;
+}
+.cam-id input {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.stream-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+.stream-row input {
+  flex: 1 1 20rem;
+}
+.probe-btn {
+  height: 32px;
+}
+.probe-result {
+  flex-basis: 100%;
+  font-size: var(--fs-xs);
+}
+.probe-result.is-ok {
+  color: var(--c-ok);
+}
+.probe-result.is-warn {
+  color: var(--c-accent);
+}
+.probe-result.is-err {
+  color: var(--c-danger);
+}
+
+@media (max-width: 640px) {
+  .cam-head {
+    grid-template-columns: auto 1fr;
+  }
+  .cam-id,
+  .cam-order {
+    grid-column: 2;
+    margin-top: 0;
+  }
+}
+
+/* local RTSP re-stream addresses for QGC, one per configured stream */
+.qgc-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--c-line);
+  font-size: var(--fs-xs);
+  color: var(--c-muted);
+}
+.qgc-hint code {
+  font-family: var(--font-mono);
+  color: var(--c-text);
+  user-select: all; /* one click selects the whole URL for copying */
+}

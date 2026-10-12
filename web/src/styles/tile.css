@@ -1,0 +1,125 @@
+.tile {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--c-video);
+  border-radius: 2px;
+}
+
+.tile-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--c-video);
+}
+
+.tile.is-max {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  border-radius: 0;
+}
+
+/* ---------- status when there is no picture ---------- */
+.tile-status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  color: var(--c-muted);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+.tile-status.over-video {
+  inset: auto 0 0 0;
+  place-items: end start;
+  padding: 6px 10px;
+  color: var(--c-accent);
+  background: linear-gradient(transparent, rgb(0 0 0 / 0.7));
+}
+
+/* ---------- label (always visible) and hover controls (hidden while watching) ---------- */
+.tile-label,
+.tile-controls {
+  position: absolute;
+  z-index: 2;
+}
+.tile-controls {
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.tile:hover .tile-controls,
+.tile:focus-within .tile-controls {
+  opacity: 1;
+}
+
+.tile-label {
+  left: 8px;
+  top: 8px;
+  max-width: calc(100% - 16px);
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  background: rgb(0 0 0 / 0.6);
+  font-family: var(--font-din);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.tile-controls {
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--r-md);
+  background: rgb(0 0 0 / 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.stream-switch {
+  display: flex;
+  margin-right: 4px;
+  padding: 2px;
+  border-radius: var(--r-sm);
+  background: rgb(255 255 255 / 0.08);
+}
+.stream-switch button {
+  min-width: 40px;
+  height: 22px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  font-family: var(--font-din);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-muted);
+  cursor: pointer;
+}
+.stream-switch button:hover {
+  color: var(--c-text);
+}
+.stream-switch button.is-active {
+  background: var(--c-accent);
+  color: var(--c-accent-ink);
+}
+
+/* ---------- edit mode ---------- */
+.tile.is-editing {
+  outline: 1px dashed var(--c-accent);
+  outline-offset: -1px;
+  cursor: move;
+}
+.tile.is-editing .tile-video {
+  opacity: 0.75;
+}

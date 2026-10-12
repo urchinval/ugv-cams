@@ -1,0 +1,9 @@
+node_modules/
+dist/
+release/
+# MediaMTX / ffmpeg binaries are fetched by scripts/fetch-binaries.mjs, never committed
+bin/
+# local dev data dir (UGV_DATA_DIR) — contains camera passwords
+.data/
+*.log
+.cache/
