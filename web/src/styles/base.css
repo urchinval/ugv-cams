@@ -137,16 +137,6 @@ input {
   cursor: default;
 }
 
-.link-btn {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--c-accent);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
-
 .muted {
   color: var(--c-muted);
 }

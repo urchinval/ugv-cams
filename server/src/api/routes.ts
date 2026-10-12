@@ -12,20 +12,17 @@ import {
   type LayoutResponse,
   type ModelFile,
   type ModelSummary,
-  type ProbeResult,
   type ServerInfo,
   type StatusResponse,
 } from '@ugv/shared';
 import type { AppConfig } from '../config.ts';
 import type { Core } from '../core.ts';
 import { fetchPathStatuses } from '../mtx/client.ts';
-import { probeRtsp } from '../rtsp/probe.ts';
 import { NotFoundError } from '../store/models.ts';
 
 const IdParams = z.object({ id: ModelIdSchema });
 const SelectBody = z.object({ modelId: ModelIdSchema.nullable() });
 const LayoutBody = z.object({ layout: LayoutSchema.nullable() });
-const ProbeBody = z.object({ url: z.string().min(1) });
 
 export function registerRoutes(app: FastifyInstance, core: Core, cfg: AppConfig): void {
   app.setErrorHandler((err, _req, reply) => {
@@ -118,7 +115,7 @@ export function registerRoutes(app: FastifyInstance, core: Core, cfg: AppConfig)
     layout: await core.setLayout(IdParams.parse(req.params).id, LayoutBody.parse(req.body).layout),
   }));
 
-  // ---- status / probe ----
+  // ---- status ----
   app.get(API_ROUTES.status, async (): Promise<StatusResponse> => {
     const mediamtx = core.mtx.status();
     let paths: StatusResponse['paths'] = {};
@@ -131,8 +128,4 @@ export function registerRoutes(app: FastifyInstance, core: Core, cfg: AppConfig)
     }
     return { mediamtx, paths };
   });
-
-  app.post(API_ROUTES.probe, async (req): Promise<ProbeResult> =>
-    probeRtsp(ProbeBody.parse(req.body).url),
-  );
 }

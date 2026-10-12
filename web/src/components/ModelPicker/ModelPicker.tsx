@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { MODEL_FILE_EXT, type ModelSummary } from '@ugv/shared';
+import { MODEL_FILE_EXT } from '@ugv/shared';
 import { api, ApiRequestError } from '../../api/client.ts';
 import { Dialog } from '../Dialog/Dialog.tsx';
 import type { ModelPickerProps } from './ModelPicker.types.ts';
@@ -39,7 +39,7 @@ export function ModelPicker(p: ModelPickerProps) {
   return (
     <Dialog
       open={p.open}
-      title="Модель машини"
+      title="Модель НРК"
       onClose={p.onClose}
       footer={
         <>
@@ -63,8 +63,7 @@ export function ModelPicker(p: ModelPickerProps) {
 
       {p.models.length === 0 ? (
         <p className="muted">
-          На цьому ноуті ще немає моделей. Створіть нову або імпортуйте файл, експортований з іншого
-          ноута.
+          На цьому пристрої ще немає моделей. Створіть нову або імпортуйте файл.
         </p>
       ) : (
         <ul className="model-list">

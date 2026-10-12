@@ -1,4 +1,3 @@
-import type { Model } from '@ugv/shared';
 import { IconChevron, IconFullscreen, IconLayout } from '../Icons/Icons.tsx';
 import type { ToolbarProps } from './Toolbar.types.ts';
 

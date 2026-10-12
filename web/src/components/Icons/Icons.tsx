@@ -45,13 +45,6 @@ export const IconLayout = () => (
     <path d="M9 2.5v11M9 8h5" />
   </Icon>
 );
-export const IconSettings = () => (
-  <Icon>
-    <path d="M3 4.5h6M12 4.5h1M3 11.5h1M7 11.5h6" />
-    <circle cx="10.5" cy="4.5" r="1.5" />
-    <circle cx="5.5" cy="11.5" r="1.5" />
-  </Icon>
-);
 export const IconFullscreen = () => (
   <Icon>
     <path d="M2.5 5.5v-3h3M10.5 2.5h3v3M13.5 10.5v3h-3M5.5 13.5h-3v-3" />

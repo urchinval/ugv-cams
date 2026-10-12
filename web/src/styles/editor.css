@@ -101,32 +101,6 @@
   font-size: var(--fs-xs);
 }
 
-.stream-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 8px;
-}
-.stream-row input {
-  flex: 1 1 20rem;
-}
-.probe-btn {
-  height: 32px;
-}
-.probe-result {
-  flex-basis: 100%;
-  font-size: var(--fs-xs);
-}
-.probe-result.is-ok {
-  color: var(--c-ok);
-}
-.probe-result.is-warn {
-  color: var(--c-accent);
-}
-.probe-result.is-err {
-  color: var(--c-danger);
-}
-
 @media (max-width: 640px) {
   .cam-head {
     grid-template-columns: auto 1fr;

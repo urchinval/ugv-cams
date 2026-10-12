@@ -8,7 +8,6 @@ import {
   type Model,
   type ModelInput,
   type ModelSummary,
-  type ProbeResult,
   type ServerInfo,
 } from '@ugv/shared';
 
@@ -23,7 +22,7 @@ export class ApiRequestError extends Error {
   }
 }
 
-/** Local backend answers in ms; the slowest call is /api/probe (6 s RTSP timeout server-side). */
+/** Local backend answers in ms; anything this slow means it is hung or gone. */
 const REQUEST_TIMEOUT_MS = 15_000;
 
 async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
@@ -71,6 +70,4 @@ export const api = {
     request<LayoutResponse>('GET', withModelId(R.modelLayout, modelId)),
   saveLayout: (modelId: string, layout: Layout | null) =>
     request<LayoutResponse>('PUT', withModelId(R.modelLayout, modelId), { layout }),
-
-  probe: (url: string) => request<ProbeResult>('POST', R.probe, { url }),
 };

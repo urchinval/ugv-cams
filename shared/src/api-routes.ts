@@ -13,7 +13,6 @@ export const API_ROUTES = {
   modelLayout: `${API_PREFIX}/models/:id/layout`,
   active: `${API_PREFIX}/active`,
   status: `${API_PREFIX}/status`,
-  probe: `${API_PREFIX}/probe`,
 } as const;
 
 export function withModelId(route: string, id: string): string {

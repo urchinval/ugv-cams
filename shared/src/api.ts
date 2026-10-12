@@ -42,26 +42,6 @@ export interface StatusResponse {
   paths: Record<string, MtxPathStatus>;
 }
 
-export interface ProbeRequest {
-  url: string;
-}
-
-export interface ProbeTrack {
-  media: string; // video | audio | application
-  codec: string; // H264, H265, PCMA, ...
-}
-
-export interface ProbeResult {
-  ok: boolean;
-  /** RTSP status code of the final DESCRIBE, if any */
-  status: number | null;
-  tracks: ProbeTrack[];
-  /** true if a video track is H.265 or otherwise not browser-WebRTC friendly */
-  needsTranscode: boolean;
-  durationMs: number;
-  error: string | null;
-}
-
 export interface LayoutResponse {
   layout: Layout;
 }

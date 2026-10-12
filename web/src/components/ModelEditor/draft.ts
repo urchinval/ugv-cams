@@ -8,7 +8,7 @@ export const STREAM_TITLE: Record<StreamKind, string> = {
 };
 
 export const STREAM_PLACEHOLDER: Record<StreamKind, string> = {
-  sub: "Обов'язковий стрім",
+  sub: "обов'язковий стрім",
   main: 'необовʼязково',
   third: 'необовʼязково',
 };

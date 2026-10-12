@@ -8,5 +8,3 @@ export function createLogger(scope: string) {
     error: (msg: string) => console.error(fmt('ERR', msg)),
   };
 }
-
-export type Logger = ReturnType<typeof createLogger>;

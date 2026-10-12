@@ -73,9 +73,7 @@ export function CameraCard(p: CameraCardProps) {
           kind={kind}
           value={c.streams[kind]}
           error={err(`streams.${kind}`)}
-          transcode={c.transcode}
           onChange={(v) => p.onStreamChange(kind, v)}
-          onEnableTranscode={() => p.onChange({ transcode: true })}
         />
       ))}
 

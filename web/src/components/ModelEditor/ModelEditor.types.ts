@@ -48,9 +48,7 @@ export interface StreamFieldProps {
   kind: StreamKind;
   value: string;
   error?: string;
-  transcode: boolean;
   onChange: (value: string) => void;
-  onEnableTranscode: () => void;
 }
 
 export interface QgcHintProps {
