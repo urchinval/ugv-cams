@@ -1,15 +1,10 @@
 import { useState } from 'react';
 import type { ProbeResult } from '@ugv/shared';
-import { api } from '../api/client.ts';
-
-interface Props {
-  url: string;
-  transcode: boolean;
-  onEnableTranscode: () => void;
-}
+import { api } from '../../api/client.ts';
+import type { ProbeButtonProps } from './ProbeButton.types.ts';
 
 /** "Перевірити" next to a URL field: RTSP DESCRIBE via the backend, shows codec / error. */
-export function ProbeButton({ url, transcode, onEnableTranscode }: Props) {
+export function ProbeButton({ url, transcode, onEnableTranscode }: ProbeButtonProps) {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<ProbeResult | null>(null);
   const [testedUrl, setTestedUrl] = useState('');
@@ -20,7 +15,14 @@ export function ProbeButton({ url, transcode, onEnableTranscode }: Props) {
     try {
       setResult(await api.probe(url));
     } catch (err) {
-      setResult({ ok: false, status: null, tracks: [], needsTranscode: false, durationMs: 0, error: (err as Error).message });
+      setResult({
+        ok: false,
+        status: null,
+        tracks: [],
+        needsTranscode: false,
+        durationMs: 0,
+        error: (err as Error).message,
+      });
     } finally {
       setBusy(false);
     }
@@ -32,11 +34,18 @@ export function ProbeButton({ url, transcode, onEnableTranscode }: Props) {
   // rendered inside the URL row: button sits next to the input, result wraps onto its own line
   return (
     <>
-      <button type="button" className="btn btn-ghost probe-btn" disabled={busy || !url.trim()} onClick={run}>
+      <button
+        type="button"
+        className="btn btn-ghost probe-btn"
+        disabled={busy || !url.trim()}
+        onClick={run}
+      >
         {busy ? 'Перевіряю…' : 'Перевірити'}
       </button>
       {result && !stale && (
-        <span className={`probe-result ${result.ok ? (result.needsTranscode && !transcode ? 'is-warn' : 'is-ok') : 'is-err'}`}>
+        <span
+          className={`probe-result ${result.ok ? (result.needsTranscode && !transcode ? 'is-warn' : 'is-ok') : 'is-err'}`}
+        >
           {result.ok ? (
             <>
               Відповідає, відео {video?.codec ?? '?'}, {result.durationMs} мс

@@ -37,7 +37,9 @@ export async function resolveNodeVersion(spec) {
   const res = await fetch('https://nodejs.org/dist/index.json');
   if (!res.ok) throw new Error(`nodejs.org index: HTTP ${res.status}`);
   const list = await res.json();
-  const hit = list.find((r) => r.version.startsWith(`v${m[1]}.`) && r.files.includes('win-x64-zip'));
+  const hit = list.find(
+    (r) => r.version.startsWith(`v${m[1]}.`) && r.files.includes('win-x64-zip'),
+  );
   if (!hit) throw new Error(`No Node ${m[1]}.x with a win-x64 zip`);
   return hit.version.slice(1);
 }

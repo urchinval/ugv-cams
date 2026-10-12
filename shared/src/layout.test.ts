@@ -38,7 +38,12 @@ test('makePrimary swaps with the biggest tile', () => {
 
 test('reconcile drops removed cameras, resets when cameras are added', () => {
   const saved = makePrimary(defaultLayout(ids(3)), 'c1');
-  assert.deepEqual(reconcileLayout(saved, ['c0', 'c1']).map((i) => i.i).sort(), ['c0', 'c1']);
+  assert.deepEqual(
+    reconcileLayout(saved, ['c0', 'c1'])
+      .map((i) => i.i)
+      .sort(),
+    ['c0', 'c1'],
+  );
   assert.deepEqual(reconcileLayout(saved, ids(4)), defaultLayout(ids(4)));
   assert.deepEqual(reconcileLayout(undefined, ids(2)), defaultLayout(ids(2)));
 });

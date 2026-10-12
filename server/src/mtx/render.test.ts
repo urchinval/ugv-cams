@@ -4,7 +4,13 @@ import { parse } from 'yaml';
 import type { Model } from '@ugv/shared';
 import { renderMediamtxConfig } from './render.ts';
 
-const opts = { apiPort: 9997, rtspPort: 8554, webrtcPort: 8889, webrtcUdpPort: 8189, ffmpeg: "'C:/app/bin/ffmpeg.exe'" };
+const opts = {
+  apiPort: 9997,
+  rtspPort: 8554,
+  webrtcPort: 8889,
+  webrtcUdpPort: 8189,
+  ffmpeg: "'C:/app/bin/ffmpeg.exe'",
+};
 
 const model: Model = {
   id: 'abc123',
@@ -32,7 +38,12 @@ const model: Model = {
 
 test('renders one on-demand path per configured stream', () => {
   const conf = parse(renderMediamtxConfig(model, opts));
-  assert.deepEqual(Object.keys(conf.paths).sort(), ['front_main', 'front_sub', 'thermal_sub', 'thermal_sub_src']);
+  assert.deepEqual(Object.keys(conf.paths).sort(), [
+    'front_main',
+    'front_sub',
+    'thermal_sub',
+    'thermal_sub_src',
+  ]);
   assert.equal(conf.paths.front_sub.source, model.cameras[0]!.streams.sub);
   assert.equal(conf.paths.front_sub.sourceOnDemand, true);
   // query string must survive YAML serialization intact

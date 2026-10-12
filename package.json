@@ -12,6 +12,8 @@
     "dev:server": "npm run dev -w server",
     "dev:web": "npm run dev -w web",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "npm run test --workspaces --if-present",
     "build": "npm run build -w web && npm run build -w server",
     "fetch-binaries": "node scripts/fetch-binaries.mjs",
@@ -21,6 +23,7 @@
     "@types/node": "^24.19.2",
     "adm-zip": "^0.6.1",
     "esbuild": "^0.28.0",
+    "prettier": "^3.9.10",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   },

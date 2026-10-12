@@ -27,7 +27,10 @@ export class Core {
     const ff = ffmpegCommandToken(cfg.ffmpegBin);
     this.ffmpegToken = ff.token;
     this.ffmpegFound = ff.found;
-    if (!ff.found) log.warn(`ffmpeg not bundled (${cfg.ffmpegBin}); transcoded cameras will use "ffmpeg" from PATH`);
+    if (!ff.found)
+      log.warn(
+        `ffmpeg not bundled (${cfg.ffmpegBin}); transcoded cameras will use "ffmpeg" from PATH`,
+      );
   }
 
   async activeModel(): Promise<Model | null> {
@@ -47,7 +50,11 @@ export class Core {
     const model = await this.activeModel();
     const yml = renderMediamtxConfig(model, { ...this.cfg.mtx, ffmpeg: this.ffmpegToken });
     await this.mtx.writeConfig(yml);
-    log.info(model ? `MediaMTX config -> "${model.name}" (${model.cameras.length} cameras)` : 'MediaMTX config -> no model');
+    log.info(
+      model
+        ? `MediaMTX config -> "${model.name}" (${model.cameras.length} cameras)`
+        : 'MediaMTX config -> no model',
+    );
     return model;
   }
 
@@ -74,7 +81,10 @@ export class Core {
 
   async getLayout(modelId: string): Promise<Layout> {
     const model = await this.models.get(modelId);
-    return reconcileLayout(this.settings.getLayout(modelId), model.cameras.map((c) => c.id));
+    return reconcileLayout(
+      this.settings.getLayout(modelId),
+      model.cameras.map((c) => c.id),
+    );
   }
 
   async setLayout(modelId: string, layout: Layout | null): Promise<Layout> {
@@ -83,9 +93,12 @@ export class Core {
     if (layout) {
       const unknown = layout.filter((it) => !ids.includes(it.i));
       if (unknown.length) {
-        throw Object.assign(new Error(`Unknown camera in layout: ${unknown.map((u) => u.i).join(', ')}`), {
-          statusCode: 400,
-        });
+        throw Object.assign(
+          new Error(`Unknown camera in layout: ${unknown.map((u) => u.i).join(', ')}`),
+          {
+            statusCode: 400,
+          },
+        );
       }
     }
     await this.settings.setLayout(modelId, layout);

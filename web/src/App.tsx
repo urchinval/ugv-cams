@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { makePrimary, type Layout, type Model, type ModelSummary, type ServerInfo, type StreamKind } from '@ugv/shared';
+import {
+  makePrimary,
+  type Layout,
+  type Model,
+  type ModelSummary,
+  type ServerInfo,
+  type StreamKind,
+} from '@ugv/shared';
 import { api } from './api/client.ts';
-import { CameraGrid } from './components/CameraGrid.tsx';
-import { ModelEditor } from './components/ModelEditor.tsx';
-import { ModelPicker } from './components/ModelPicker.tsx';
-import { Notice } from './components/Notice.tsx';
-import { Toolbar } from './components/Toolbar.tsx';
+import { CameraGrid } from './components/CameraGrid/CameraGrid.tsx';
+import { ModelEditor } from './components/ModelEditor/ModelEditor.tsx';
+import { ModelPicker } from './components/ModelPicker/ModelPicker.tsx';
+import { Notice } from './components/Notice/Notice.tsx';
+import { Toolbar } from './components/Toolbar/Toolbar.tsx';
 
 type EditorState = { open: false } | { open: true; model: Model | null };
 
@@ -36,7 +43,10 @@ export function App() {
     return () => window.clearTimeout(t);
   }, [notice]);
 
-  const report = useCallback((err: unknown) => setNotice((err as Error).message || String(err)), []);
+  const report = useCallback(
+    (err: unknown) => setNotice((err as Error).message || String(err)),
+    [],
+  );
 
   const refreshModels = useCallback(async () => setModels(await api.listModels()), []);
 
@@ -84,7 +94,10 @@ export function App() {
   const commitLayout = (l: Layout) => {
     setLayout(l);
     const m = modelRef.current;
-    if (m) api.saveLayout(m.id, l).catch((err: Error) => setNotice(`Розкладку не збережено: ${err.message}`));
+    if (m)
+      api
+        .saveLayout(m.id, l)
+        .catch((err: Error) => setNotice(`Розкладку не збережено: ${err.message}`));
   };
 
   const resetLayout = async () => {
@@ -169,7 +182,9 @@ export function App() {
             <button
               type="button"
               className="btn btn-accent"
-              onClick={() => (models.length ? setPickerOpen(true) : setEditor({ open: true, model: null }))}
+              onClick={() =>
+                models.length ? setPickerOpen(true) : setEditor({ open: true, model: null })
+              }
             >
               {models.length ? 'Обрати модель' : 'Нова модель'}
             </button>
@@ -177,9 +192,7 @@ export function App() {
         )
       )}
 
-      {notice && (
-        <Notice key={notice} text={notice} onDismiss={() => setNotice(null)} />
-      )}
+      {notice && <Notice key={notice} text={notice} onDismiss={() => setNotice(null)} />}
 
       <ModelPicker
         open={pickerOpen}

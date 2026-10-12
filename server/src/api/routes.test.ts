@@ -19,7 +19,15 @@ let mtxFile: string;
 const modelBody = {
   name: 'Lynx 2407',
   cameras: [
-    { id: 'front', label: 'Front', streams: { sub: 'rtsp://u:p@192.168.18.106:554/s1', main: 'rtsp://u:p@192.168.18.106:554/s0', third: '' } },
+    {
+      id: 'front',
+      label: 'Front',
+      streams: {
+        sub: 'rtsp://u:p@192.168.18.106:554/s1',
+        main: 'rtsp://u:p@192.168.18.106:554/s0',
+        third: '',
+      },
+    },
     { id: 'rear', label: 'Rear', streams: { sub: 'rtsp://u:p@192.168.18.108:554/s1' } },
   ],
 };
@@ -46,7 +54,11 @@ after(async () => {
 
 test('model lifecycle: create -> select -> layout -> export/import -> delete', async () => {
   // validation error shape
-  const bad = await app.inject({ method: 'POST', url: '/api/models', payload: { name: '', cameras: [] } });
+  const bad = await app.inject({
+    method: 'POST',
+    url: '/api/models',
+    payload: { name: '', cameras: [] },
+  });
   assert.equal(bad.statusCode, 400);
   assert.ok(bad.json().issues.length >= 2);
 
@@ -57,16 +69,27 @@ test('model lifecycle: create -> select -> layout -> export/import -> delete', a
   assert.equal(model.cameras[0].streams.third, null);
 
   const list = await app.inject({ method: 'GET', url: '/api/models' });
-  assert.deepEqual(list.json().map((m: { name: string }) => m.name), ['Lynx 2407']);
+  assert.deepEqual(
+    list.json().map((m: { name: string }) => m.name),
+    ['Lynx 2407'],
+  );
 
   // nothing active yet
   assert.equal((await app.inject({ method: 'GET', url: '/api/active' })).json().model, null);
   assert.deepEqual(parse(await readFile(mtxFile, 'utf8')).paths, {});
 
   // select -> yml rendered
-  const sel = await app.inject({ method: 'PUT', url: '/api/active', payload: { modelId: model.id } });
+  const sel = await app.inject({
+    method: 'PUT',
+    url: '/api/active',
+    payload: { modelId: model.id },
+  });
   assert.equal(sel.json().model.id, model.id);
-  assert.deepEqual(Object.keys(parse(await readFile(mtxFile, 'utf8')).paths).sort(), ['front_main', 'front_sub', 'rear_sub']);
+  assert.deepEqual(Object.keys(parse(await readFile(mtxFile, 'utf8')).paths).sort(), [
+    'front_main',
+    'front_sub',
+    'rear_sub',
+  ]);
 
   // update active model -> yml re-rendered
   const upd = await app.inject({
@@ -75,10 +98,14 @@ test('model lifecycle: create -> select -> layout -> export/import -> delete', a
     payload: { ...modelBody, cameras: [modelBody.cameras[0]] },
   });
   assert.equal(upd.statusCode, 200);
-  assert.deepEqual(Object.keys(parse(await readFile(mtxFile, 'utf8')).paths).sort(), ['front_main', 'front_sub']);
+  assert.deepEqual(Object.keys(parse(await readFile(mtxFile, 'utf8')).paths).sort(), [
+    'front_main',
+    'front_sub',
+  ]);
 
   // layout: default, save, unknown camera rejected, reset
-  const lay = (await app.inject({ method: 'GET', url: `/api/models/${model.id}/layout` })).json().layout;
+  const lay = (await app.inject({ method: 'GET', url: `/api/models/${model.id}/layout` })).json()
+    .layout;
   assert.deepEqual(lay, [{ i: 'front', x: 0, y: 0, w: 12, h: 12 }]);
   const badLay = await app.inject({
     method: 'PUT',
@@ -106,7 +133,10 @@ test('model lifecycle: create -> select -> layout -> export/import -> delete', a
   assert.equal(del.statusCode, 204);
   assert.equal((await app.inject({ method: 'GET', url: '/api/active' })).json().model, null);
   assert.deepEqual(parse(await readFile(mtxFile, 'utf8')).paths, {});
-  assert.equal((await app.inject({ method: 'GET', url: `/api/models/${model.id}` })).statusCode, 404);
+  assert.equal(
+    (await app.inject({ method: 'GET', url: `/api/models/${model.id}` })).statusCode,
+    404,
+  );
 });
 
 test('status reports MediaMTX not running', async () => {

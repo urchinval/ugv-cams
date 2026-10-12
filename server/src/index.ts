@@ -31,7 +31,9 @@ async function main(): Promise<void> {
   // config must exist before MediaMTX starts
   await core.applyActive();
   if (await isPortListening(config.http.port)) {
-    log.error(`Port ${config.http.port} is busy — ugv-cams is probably already running (or set UGV_HTTP_PORT)`);
+    log.error(
+      `Port ${config.http.port} is busy — ugv-cams is probably already running (or set UGV_HTTP_PORT)`,
+    );
     process.exitCode = 1;
     return;
   }
@@ -60,7 +62,11 @@ async function main(): Promise<void> {
   const url = `http://localhost:${config.http.port}`;
   log.info(`UI: ${url}`);
   if (config.openBrowser && config.isWindows) {
-    spawn('cmd', ['/c', 'start', '', url], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+    spawn('cmd', ['/c', 'start', '', url], {
+      detached: true,
+      stdio: 'ignore',
+      windowsHide: true,
+    }).unref();
   }
 
   let shuttingDown = false;

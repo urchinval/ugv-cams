@@ -1,17 +1,9 @@
 import type { Model } from '@ugv/shared';
-import { IconChevron, IconFullscreen, IconLayout } from './icons.tsx';
-
-interface Props {
-  model: Model | null;
-  editing: boolean;
-  onPickModel: () => void;
-  onToggleEditing: () => void;
-  onResetLayout: () => void;
-  onFullscreen: () => void;
-}
+import { IconChevron, IconFullscreen, IconLayout } from '../Icons/Icons.tsx';
+import type { ToolbarProps } from './Toolbar.types.ts';
 
 /** Thin strip above the video wall; dimmed until hovered so it does not compete with video. */
-export function Toolbar(p: Props) {
+export function Toolbar(p: ToolbarProps) {
   return (
     <header className={`toolbar${p.editing ? ' is-editing' : ''}`}>
       <button type="button" className="plate" onClick={p.onPickModel} title="Змінити модель">
@@ -19,7 +11,11 @@ export function Toolbar(p: Props) {
         <IconChevron />
       </button>
 
-      {p.editing && <span className="toolbar-hint">Перетягуйте плитки й тягніть за краї, щоб змінити розмір</span>}
+      {p.editing && (
+        <span className="toolbar-hint">
+          Перетягуйте плитки й тягніть за краї, щоб змінити розмір
+        </span>
+      )}
 
       <div className="toolbar-actions">
         {p.model && p.editing && (
@@ -38,7 +34,12 @@ export function Toolbar(p: Props) {
             {p.editing ? 'Готово' : 'Розкладка'}
           </button>
         )}
-        <button type="button" className="icon-btn" title="Повноекранний режим браузера (F11)" onClick={p.onFullscreen}>
+        <button
+          type="button"
+          className="icon-btn"
+          title="Повноекранний режим браузера (F11)"
+          onClick={p.onFullscreen}
+        >
           <IconFullscreen />
         </button>
       </div>

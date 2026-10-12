@@ -10,7 +10,14 @@
  *   'new'/'checking' never reaches 'failed' on its own) or no new frames for 6 s -> reconnect.
  */
 
+import { playPath, type StreamKind } from '@ugv/shared';
+
 export type WhepState = 'connecting' | 'playing' | 'retrying' | 'closed';
+
+/** MediaMTX WHEP endpoint of a camera stream. `nonce` forces a new URL (manual reconnect). */
+export function whepUrl(base: string, cameraId: string, stream: StreamKind, nonce = 0): string {
+  return `${base}/${playPath(cameraId, stream)}/whep${nonce ? `?r=${nonce}` : ''}`;
+}
 
 export interface WhepCallbacks {
   onTrack: (stream: MediaStream) => void;
@@ -80,7 +87,8 @@ export class WhepReader {
       } else if (pc.connectionState === 'disconnected') {
         // ICE often recovers by itself after a short Starlink dropout; give it a moment
         window.setTimeout(() => {
-          if (this.pc === pc && pc.connectionState === 'disconnected') this.scheduleRetry('зʼєднання перервано');
+          if (this.pc === pc && pc.connectionState === 'disconnected')
+            this.scheduleRetry('зʼєднання перервано');
         }, DISCONNECT_GRACE_MS);
       }
     };
@@ -120,7 +128,9 @@ export class WhepReader {
     } catch (err) {
       if (this.closed || this.pc !== pc) return;
       // fetch() rejects with TypeError when nothing listens on the WHEP port
-      this.scheduleRetry(err instanceof TypeError ? 'MediaMTX не відповідає' : (err as Error).message);
+      this.scheduleRetry(
+        err instanceof TypeError ? 'MediaMTX не відповідає' : (err as Error).message,
+      );
     }
   }
 
@@ -139,7 +149,8 @@ export class WhepReader {
       try {
         const stats = await pc.getStats();
         stats.forEach((s) => {
-          if (s.type === 'inbound-rtp' && s.kind === 'video') decoded = (s as { framesDecoded?: number }).framesDecoded ?? 0;
+          if (s.type === 'inbound-rtp' && s.kind === 'video')
+            decoded = (s as { framesDecoded?: number }).framesDecoded ?? 0;
         });
       } catch {
         /* closed mid-call: counts as no progress */
@@ -150,7 +161,9 @@ export class WhepReader {
         frames = decoded;
         lastChange = t;
       } else if (frames === 0 && t - lastChange > FIRST_FRAME_TIMEOUT_MS) {
-        this.scheduleRetry(pc.connectionState === 'connected' ? 'немає відео від камери' : 'WebRTC не зʼєднується');
+        this.scheduleRetry(
+          pc.connectionState === 'connected' ? 'немає відео від камери' : 'WebRTC не зʼєднується',
+        );
       } else if (frames > 0 && t - lastChange > STALL_AFTER_MS) {
         this.scheduleRetry('немає нових кадрів');
       }
@@ -215,10 +228,12 @@ function waitIceGathering(pc: RTCPeerConnection): Promise<void> {
 
 function describeHttpError(status: number, body: string): string {
   // our paths are always in the generated yml, so this means another MediaMTX owns the port
-  if (/not configured/i.test(body)) return 'MediaMTX не знає цей потік: схоже, запущено інший mediamtx.exe';
+  if (/not configured/i.test(body))
+    return 'MediaMTX не знає цей потік: схоже, запущено інший mediamtx.exe';
   // on-demand source did not come up in time: camera unreachable over the link
   if (status === 404) return 'камера не відповідає (немає звʼязку з машиною?)';
-  if (status === 400 && /codecs not supported/i.test(body)) return 'кодек не підтримується браузером (потрібен транскод)';
+  if (status === 400 && /codecs not supported/i.test(body))
+    return 'кодек не підтримується браузером (потрібен транскод)';
   const short = body.replace(/\s+/g, ' ').trim().slice(0, 120);
   return `MediaMTX ${status}${short ? `: ${short}` : ''}`;
 }

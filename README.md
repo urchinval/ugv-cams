@@ -36,12 +36,12 @@ MediaMTX тягне RTSP з камер через тунель і віддає W
 
 ## Де що лежить на ноуті
 
-| Що | Де |
-|---|---|
-| Програма (замінюється при оновленні) | папка з розпакованого zip |
-| Моделі (з паролями) | `%APPDATA%\ugv-cams\models\*.json` |
-| Активна модель, розкладки | `%APPDATA%\ugv-cams\settings.json` |
-| Згенерований конфіг MediaMTX | `%APPDATA%\ugv-cams\runtime\mediamtx.yml` |
+| Що                                   | Де                                        |
+| ------------------------------------ | ----------------------------------------- |
+| Програма (замінюється при оновленні) | папка з розпакованого zip                 |
+| Моделі (з паролями)                  | `%APPDATA%\ugv-cams\models\*.json`        |
+| Активна модель, розкладки            | `%APPDATA%\ugv-cams\settings.json`        |
+| Згенерований конфіг MediaMTX         | `%APPDATA%\ugv-cams\runtime\mediamtx.yml` |
 
 ## MediaMTX path names і QGC
 
@@ -55,12 +55,12 @@ MediaMTX тягне RTSP з камер через тунель і віддає W
 
 ## Порти
 
-| Порт | Що |
-|---|---|
-| 8080 TCP | UI і API ugv-cams (лише `127.0.0.1`) |
-| 8554 TCP | RTSP MediaMTX (для QGC) |
-| 8889 TCP | WebRTC/WHEP MediaMTX (браузер) |
-| 8189 UDP | WebRTC ICE |
+| Порт     | Що                                      |
+| -------- | --------------------------------------- |
+| 8080 TCP | UI і API ugv-cams (лише `127.0.0.1`)    |
+| 8554 TCP | RTSP MediaMTX (для QGC)                 |
+| 8889 TCP | WebRTC/WHEP MediaMTX (браузер)          |
+| 8189 UDP | WebRTC ICE                              |
 | 9997 TCP | Control API MediaMTX (лише `127.0.0.1`) |
 
 ## Проблеми
@@ -121,26 +121,26 @@ npm test && npm run typecheck
 
 Змінні оточення (`server/src/config.ts`):
 
-| Змінна | За замовчуванням |
-|---|---|
-| `UGV_DATA_DIR` | `%APPDATA%\ugv-cams` |
-| `UGV_HTTP_HOST`, `UGV_HTTP_PORT` | `127.0.0.1`, `8080` |
-| `UGV_MTX_RTSP_PORT`, `UGV_MTX_WEBRTC_PORT`, `UGV_MTX_WEBRTC_UDP_PORT`, `UGV_MTX_API_PORT` | `8554`, `8889`, `8189`, `9997` |
-| `UGV_BIN_DIR` | `bin/` поруч із програмою (у репо: `bin/`) |
-| `UGV_MEDIAMTX_BIN`, `UGV_FFMPEG_BIN` | `<bin>/mediamtx.exe`, `<bin>/ffmpeg.exe` (ffmpeg інакше з `PATH`) |
-| `UGV_WEB_DIR` | `app/web` у zip, `web/dist` у репо |
-| `UGV_NO_BROWSER=1` | не відкривати браузер при запуску zip-версії |
+| Змінна                                                                                    | За замовчуванням                                                  |
+| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `UGV_DATA_DIR`                                                                            | `%APPDATA%\ugv-cams`                                              |
+| `UGV_HTTP_HOST`, `UGV_HTTP_PORT`                                                          | `127.0.0.1`, `8080`                                               |
+| `UGV_MTX_RTSP_PORT`, `UGV_MTX_WEBRTC_PORT`, `UGV_MTX_WEBRTC_UDP_PORT`, `UGV_MTX_API_PORT` | `8554`, `8889`, `8189`, `9997`                                    |
+| `UGV_BIN_DIR`                                                                             | `bin/` поруч із програмою (у репо: `bin/`)                        |
+| `UGV_MEDIAMTX_BIN`, `UGV_FFMPEG_BIN`                                                      | `<bin>/mediamtx.exe`, `<bin>/ffmpeg.exe` (ffmpeg інакше з `PATH`) |
+| `UGV_WEB_DIR`                                                                             | `app/web` у zip, `web/dist` у репо                                |
+| `UGV_NO_BROWSER=1`                                                                        | не відкривати браузер при запуску zip-версії                      |
 
 ## API
 
-| Метод | Шлях | Опис |
-|---|---|---|
-| GET | `/api/info` | версія, порти MediaMTX, чи знайдено ffmpeg |
-| GET / POST | `/api/models` | список / створити |
-| GET / PUT / DELETE | `/api/models/:id` | модель |
-| GET | `/api/models/:id/export` | файл для перенесення на інший ноут (з паролями) |
-| POST | `/api/models/import` | імпорт (завжди новий id) |
-| GET / PUT | `/api/active` | активна модель `{ modelId }` → перерендер mediamtx.yml |
-| GET / PUT | `/api/models/:id/layout` | розкладка; `{ layout: null }` скидає на авто |
-| GET | `/api/status` | стан MediaMTX і шляхів |
-| POST | `/api/probe` | перевірка RTSP URL `{ url }` |
+| Метод              | Шлях                     | Опис                                                   |
+| ------------------ | ------------------------ | ------------------------------------------------------ |
+| GET                | `/api/info`              | версія, порти MediaMTX, чи знайдено ffmpeg             |
+| GET / POST         | `/api/models`            | список / створити                                      |
+| GET / PUT / DELETE | `/api/models/:id`        | модель                                                 |
+| GET                | `/api/models/:id/export` | файл для перенесення на інший ноут (з паролями)        |
+| POST               | `/api/models/import`     | імпорт (завжди новий id)                               |
+| GET / PUT          | `/api/active`            | активна модель `{ modelId }` → перерендер mediamtx.yml |
+| GET / PUT          | `/api/models/:id/layout` | розкладка; `{ layout: null }` скидає на авто           |
+| GET                | `/api/status`            | стан MediaMTX і шляхів                                 |
+| POST               | `/api/probe`             | перевірка RTSP URL `{ url }`                           |

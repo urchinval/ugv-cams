@@ -16,7 +16,9 @@ const BIN = join(ROOT, 'bin');
 /** Extract the single file named `entry` from anywhere inside the archive. */
 function extractEntry(zipPath, entry, destDir) {
   const zip = new AdmZip(zipPath);
-  const hit = zip.getEntries().find((e) => !e.isDirectory && basename(e.entryName).toLowerCase() === entry.toLowerCase());
+  const hit = zip
+    .getEntries()
+    .find((e) => !e.isDirectory && basename(e.entryName).toLowerCase() === entry.toLowerCase());
   if (!hit) throw new Error(`${entry} not found in ${zipPath}`);
   zip.extractEntryTo(hit, destDir, false, true);
   return join(destDir, entry);
@@ -40,7 +42,8 @@ await clean(runtimeDir);
 
 const manifest = [];
 manifest.push(await fetchOne('mediamtx', versions.mediamtx, BIN, versions.mediamtx.version));
-if (!args.has('--no-ffmpeg')) manifest.push(await fetchOne('ffmpeg', versions.ffmpeg, BIN, versions.ffmpeg.version));
+if (!args.has('--no-ffmpeg'))
+  manifest.push(await fetchOne('ffmpeg', versions.ffmpeg, BIN, versions.ffmpeg.version));
 const nodeVersion = await resolveNodeVersion(versions.node.version);
 manifest.push(await fetchOne('node', versions.node, runtimeDir, nodeVersion));
 

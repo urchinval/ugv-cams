@@ -1,13 +1,15 @@
-import type {
-  ActiveResponse,
-  ApiError,
-  Layout,
-  LayoutResponse,
-  Model,
-  ModelInput,
-  ModelSummary,
-  ProbeResult,
-  ServerInfo,
+import {
+  API_ROUTES,
+  withModelId,
+  type ActiveResponse,
+  type ApiError,
+  type Layout,
+  type LayoutResponse,
+  type Model,
+  type ModelInput,
+  type ModelSummary,
+  type ProbeResult,
+  type ServerInfo,
 } from '@ugv/shared';
 
 /** Error with the server's validation issues attached, so forms can show them per field. */
@@ -43,27 +45,32 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
   }
   if (res.status === 204) return undefined as T;
   const data = (await res.json().catch(() => ({}))) as T & Partial<ApiError>;
-  if (!res.ok) throw new ApiRequestError(data.error ?? `HTTP ${res.status}`, res.status, data.issues);
+  if (!res.ok)
+    throw new ApiRequestError(data.error ?? `HTTP ${res.status}`, res.status, data.issues);
   return data;
 }
 
+const R = API_ROUTES;
+
 export const api = {
-  info: () => request<ServerInfo>('GET', '/api/info'),
+  info: () => request<ServerInfo>('GET', R.info),
 
-  listModels: () => request<ModelSummary[]>('GET', '/api/models'),
-  getModel: (id: string) => request<Model>('GET', `/api/models/${id}`),
-  createModel: (input: ModelInput) => request<Model>('POST', '/api/models', input),
-  updateModel: (id: string, input: ModelInput) => request<Model>('PUT', `/api/models/${id}`, input),
-  deleteModel: (id: string) => request<void>('DELETE', `/api/models/${id}`),
-  importModel: (raw: unknown) => request<Model>('POST', '/api/models/import', raw),
-  exportUrl: (id: string) => `/api/models/${id}/export`,
+  listModels: () => request<ModelSummary[]>('GET', R.models),
+  getModel: (id: string) => request<Model>('GET', withModelId(R.model, id)),
+  createModel: (input: ModelInput) => request<Model>('POST', R.models, input),
+  updateModel: (id: string, input: ModelInput) =>
+    request<Model>('PUT', withModelId(R.model, id), input),
+  deleteModel: (id: string) => request<void>('DELETE', withModelId(R.model, id)),
+  importModel: (raw: unknown) => request<Model>('POST', R.modelImport, raw),
+  exportUrl: (id: string) => withModelId(R.modelExport, id),
 
-  getActive: () => request<ActiveResponse>('GET', '/api/active'),
-  setActive: (modelId: string | null) => request<ActiveResponse>('PUT', '/api/active', { modelId }),
+  getActive: () => request<ActiveResponse>('GET', R.active),
+  setActive: (modelId: string | null) => request<ActiveResponse>('PUT', R.active, { modelId }),
 
-  getLayout: (modelId: string) => request<LayoutResponse>('GET', `/api/models/${modelId}/layout`),
+  getLayout: (modelId: string) =>
+    request<LayoutResponse>('GET', withModelId(R.modelLayout, modelId)),
   saveLayout: (modelId: string, layout: Layout | null) =>
-    request<LayoutResponse>('PUT', `/api/models/${modelId}/layout`, { layout }),
+    request<LayoutResponse>('PUT', withModelId(R.modelLayout, modelId), { layout }),
 
-  probe: (url: string) => request<ProbeResult>('POST', '/api/probe', { url }),
+  probe: (url: string) => request<ProbeResult>('POST', R.probe, { url }),
 };

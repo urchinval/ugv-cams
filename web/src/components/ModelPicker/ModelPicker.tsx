@@ -1,18 +1,8 @@
 import { useRef, useState } from 'react';
-import type { ModelSummary } from '@ugv/shared';
-import { api, ApiRequestError } from '../api/client.ts';
-import { Dialog } from './Dialog.tsx';
-
-interface Props {
-  open: boolean;
-  models: ModelSummary[];
-  activeId: string | null;
-  onClose: () => void;
-  onSelect: (id: string) => void;
-  onEdit: (id: string) => void;
-  onCreate: () => void;
-  onImported: (id: string) => void;
-}
+import { MODEL_FILE_EXT, type ModelSummary } from '@ugv/shared';
+import { api, ApiRequestError } from '../../api/client.ts';
+import { Dialog } from '../Dialog/Dialog.tsx';
+import type { ModelPickerProps } from './ModelPicker.types.ts';
 
 const cameraWord = (n: number) => {
   const m10 = n % 10;
@@ -22,7 +12,7 @@ const cameraWord = (n: number) => {
   return 'камер';
 };
 
-export function ModelPicker(p: Props) {
+export function ModelPicker(p: ModelPickerProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [importError, setImportError] = useState<string | null>(null);
 
@@ -62,7 +52,7 @@ export function ModelPicker(p: Props) {
           <input
             ref={fileRef}
             type="file"
-            accept=".json,application/json"
+            accept={`${MODEL_FILE_EXT},.json,application/json`}
             hidden
             onChange={(e) => void onFile(e.target.files?.[0])}
           />
@@ -73,7 +63,8 @@ export function ModelPicker(p: Props) {
 
       {p.models.length === 0 ? (
         <p className="muted">
-          На цьому ноуті ще немає моделей. Створіть нову або імпортуйте файл, експортований з іншого ноута.
+          На цьому ноуті ще немає моделей. Створіть нову або імпортуйте файл, експортований з іншого
+          ноута.
         </p>
       ) : (
         <ul className="model-list">
@@ -90,7 +81,11 @@ export function ModelPicker(p: Props) {
                   {m.cameraCount} {cameraWord(m.cameraCount)}
                 </span>
               </button>
-              <button type="button" className="btn btn-ghost btn-small" onClick={() => p.onEdit(m.id)}>
+              <button
+                type="button"
+                className="btn btn-ghost btn-small"
+                onClick={() => p.onEdit(m.id)}
+              >
                 Редагувати
               </button>
             </li>

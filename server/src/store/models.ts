@@ -72,7 +72,8 @@ export class ModelStore {
       await unlink(this.file(id));
       log.info(`Deleted model ${id}`);
     } catch (err) {
-      if ((err as NodeJS.ErrnoException).code === 'ENOENT') throw new NotFoundError(`Model ${id} not found`);
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT')
+        throw new NotFoundError(`Model ${id} not found`);
       throw err;
     }
   }

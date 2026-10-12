@@ -1,17 +1,9 @@
-import { useEffect, useRef, type ReactNode } from 'react';
-import { IconClose } from './icons.tsx';
-
-interface Props {
-  open: boolean;
-  title: string;
-  onClose: () => void;
-  children: ReactNode;
-  footer?: ReactNode;
-  wide?: boolean;
-}
+import { useEffect, useRef } from 'react';
+import { IconClose } from '../Icons/Icons.tsx';
+import type { DialogProps } from './Dialog.types.ts';
 
 /** Native <dialog>: focus trap, Esc and backdrop for free. */
-export function Dialog({ open, title, onClose, children, footer, wide }: Props) {
+export function Dialog({ open, title, onClose, children, footer, wide }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {

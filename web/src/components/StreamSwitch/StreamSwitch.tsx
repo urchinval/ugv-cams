@@ -1,4 +1,5 @@
 import type { StreamKind } from '@ugv/shared';
+import type { StreamSwitchProps } from './StreamSwitch.types.ts';
 
 const LABEL: Record<StreamKind, string> = { sub: 'sub', main: 'main', third: '3rd' };
 const TITLE: Record<StreamKind, string> = {
@@ -7,14 +8,8 @@ const TITLE: Record<StreamKind, string> = {
   third: 'Третій потік',
 };
 
-interface Props {
-  available: StreamKind[];
-  value: StreamKind;
-  onChange: (s: StreamKind) => void;
-}
-
 /** Segmented control; hidden entirely when the camera has a single stream. */
-export function StreamSwitch({ available, value, onChange }: Props) {
+export function StreamSwitch({ available, value, onChange }: StreamSwitchProps) {
   if (available.length < 2) return null;
   return (
     <div className="stream-switch" role="radiogroup" aria-label="Потік камери">

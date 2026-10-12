@@ -87,7 +87,9 @@ export class MediaMtxSupervisor {
       const delay = BACKOFF_MS[Math.min(this.attempt, BACKOFF_MS.length - 1)]!;
       this.attempt++;
       this.restarts++;
-      log.warn(`MediaMTX exited (code=${code ?? '-'} signal=${signal ?? '-'}), restarting in ${delay} ms`);
+      log.warn(
+        `MediaMTX exited (code=${code ?? '-'} signal=${signal ?? '-'}), restarting in ${delay} ms`,
+      );
       this.restartTimer = setTimeout(() => this.start(), delay);
     });
   }

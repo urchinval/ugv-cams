@@ -1,25 +1,12 @@
 import { useEffect, useMemo } from 'react';
 import { GridLayout, verticalCompactor, type Layout as RglLayout } from 'react-grid-layout';
 import { absoluteStrategy } from 'react-grid-layout/core';
-import { DEFAULT_STREAM, GRID_COLS, GRID_ROWS, type Layout, type Model, type StreamKind } from '@ugv/shared';
-import { useElementSize } from '../hooks/useElementSize.ts';
-import { CameraTile } from './CameraTile.tsx';
+import { DEFAULT_STREAM, GRID_COLS, GRID_ROWS, type Layout } from '@ugv/shared';
+import { useElementSize } from '../../hooks/useElementSize.ts';
+import { CameraTile } from '../CameraTile/CameraTile.tsx';
+import type { CameraGridProps } from './CameraGrid.types.ts';
 
 const GAP = 6;
-
-interface Props {
-  model: Model;
-  layout: Layout;
-  streams: Record<string, StreamKind>;
-  webrtcBase: string;
-  editing: boolean;
-  maximized: string | null;
-  onLayoutChange: (l: Layout) => void;
-  onLayoutCommit: (l: Layout) => void;
-  onStreamChange: (cameraId: string, s: StreamKind) => void;
-  onMakePrimary: (cameraId: string) => void;
-  onToggleMax: (cameraId: string) => void;
-}
 
 const toLayout = (l: RglLayout): Layout => l.map(({ i, x, y, w, h }) => ({ i, x, y, w, h }));
 
@@ -28,12 +15,14 @@ const toLayout = (l: RglLayout): Layout => l.map(({ i, x, y, w, h }) => ({ i, x,
  * from the container height so tiles always fill the screen without scrolling.
  * absoluteStrategy (top/left instead of transform) lets a maximized tile use position:fixed.
  */
-export function CameraGrid(p: Props) {
+export function CameraGrid(p: CameraGridProps) {
   const { ref, width, height } = useElementSize<HTMLDivElement>();
   const rowHeight = Math.max(8, (height - GAP * (GRID_ROWS + 1)) / GRID_ROWS);
 
   const biggest = useMemo(
-    () => p.layout.reduce<Layout[number] | null>((a, b) => (!a || b.w * b.h > a.w * a.h ? b : a), null)?.i,
+    () =>
+      p.layout.reduce<Layout[number] | null>((a, b) => (!a || b.w * b.h > a.w * a.h ? b : a), null)
+        ?.i,
     [p.layout],
   );
 
@@ -47,7 +36,10 @@ export function CameraGrid(p: Props) {
   }, [p.maximized, p.onToggleMax]);
 
   return (
-    <div ref={ref} className={`grid-host${p.editing ? ' is-editing' : ''}${p.maximized ? ' has-max' : ''}`}>
+    <div
+      ref={ref}
+      className={`grid-host${p.editing ? ' is-editing' : ''}${p.maximized ? ' has-max' : ''}`}
+    >
       {width > 0 && height > 0 && (
         <GridLayout
           width={width}
@@ -59,8 +51,15 @@ export function CameraGrid(p: Props) {
             containerPadding: [GAP, GAP],
             maxRows: GRID_ROWS,
           }}
-          dragConfig={{ enabled: p.editing && !p.maximized, cancel: '.tile-controls', threshold: 4 }}
-          resizeConfig={{ enabled: p.editing && !p.maximized, handles: ['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n'] }}
+          dragConfig={{
+            enabled: p.editing && !p.maximized,
+            cancel: '.tile-controls',
+            threshold: 4,
+          }}
+          resizeConfig={{
+            enabled: p.editing && !p.maximized,
+            handles: ['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n'],
+          }}
           compactor={verticalCompactor}
           positionStrategy={absoluteStrategy}
           autoSize={false}

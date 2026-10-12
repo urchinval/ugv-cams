@@ -52,9 +52,11 @@ export class SettingsStore {
   /** Serialize writes — layout saves can arrive in quick succession while dragging. */
   private save(): Promise<void> {
     const snapshot = structuredClone(this.data);
-    this.writing = this.writing.then(() => writeJsonAtomic(this.file, snapshot)).catch((err) => {
-      log.error(`Failed to save settings: ${(err as Error).message}`);
-    });
+    this.writing = this.writing
+      .then(() => writeJsonAtomic(this.file, snapshot))
+      .catch((err) => {
+        log.error(`Failed to save settings: ${(err as Error).message}`);
+      });
     return this.writing;
   }
 }

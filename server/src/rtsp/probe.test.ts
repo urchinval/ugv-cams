@@ -36,7 +36,9 @@ function fakeCamera(sdp: string): Promise<{ port: number; close: () => void }> {
           `RTSP/1.0 401 Unauthorized\r\nCSeq: 1\r\nWWW-Authenticate: Digest realm="${realm}", nonce="${nonce}"\r\nWWW-Authenticate: Basic realm="${realm}"\r\n\r\n`,
         );
       } else {
-        sock.end(`RTSP/1.0 200 OK\r\nCSeq: 1\r\nContent-Type: application/sdp\r\nContent-Length: ${Buffer.byteLength(sdp)}\r\n\r\n${sdp}`);
+        sock.end(
+          `RTSP/1.0 200 OK\r\nCSeq: 1\r\nContent-Type: application/sdp\r\nContent-Length: ${Buffer.byteLength(sdp)}\r\n\r\n${sdp}`,
+        );
       }
       buf = '';
     });
@@ -49,7 +51,9 @@ function fakeCamera(sdp: string): Promise<{ port: number; close: () => void }> {
 }
 
 test('parseTarget strips credentials, decodes percent-encoding, keeps query', () => {
-  const t = parseTarget('rtsp://admin:p%40ss@192.168.18.106:554/cam/realmonitor?channel=1&subtype=1');
+  const t = parseTarget(
+    'rtsp://admin:p%40ss@192.168.18.106:554/cam/realmonitor?channel=1&subtype=1',
+  );
   assert.equal(t.user, 'admin');
   assert.equal(t.pass, 'p@ss');
   assert.equal(t.port, 554);
@@ -67,11 +71,16 @@ test('SDP parsing incl. static payload types', () => {
 test('digest auth -> 200, H.265 flagged for transcode', async () => {
   const cam = await fakeCamera(SDP_H265);
   try {
-    const r = await probeRtsp(`rtsp://admin:p%40ss@127.0.0.1:${cam.port}/cam/realmonitor?channel=1&subtype=1`);
+    const r = await probeRtsp(
+      `rtsp://admin:p%40ss@127.0.0.1:${cam.port}/cam/realmonitor?channel=1&subtype=1`,
+    );
     assert.equal(r.error, null);
     assert.equal(r.ok, true);
     assert.equal(r.needsTranscode, true);
-    assert.deepEqual(r.tracks.map((t) => t.codec), ['H265', 'PCMA']);
+    assert.deepEqual(
+      r.tracks.map((t) => t.codec),
+      ['H265', 'PCMA'],
+    );
   } finally {
     cam.close();
   }

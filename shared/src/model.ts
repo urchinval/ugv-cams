@@ -29,7 +29,10 @@ const OptionalRtspUrlSchema = z.preprocess(
 export const CameraIdSchema = z
   .string()
   .trim()
-  .regex(/^[a-z0-9][a-z0-9_-]{0,31}$/, 'id: латиниця в нижньому регістрі, цифри, _ або -, до 32 символів');
+  .regex(
+    /^[a-z0-9][a-z0-9_-]{0,31}$/,
+    'id: латиниця в нижньому регістрі, цифри, _ або -, до 32 символів',
+  );
 
 export const CameraSchema = z.object({
   id: CameraIdSchema,
@@ -55,7 +58,11 @@ export const ModelInputSchema = z.object({
       const seen = new Set<string>();
       cams.forEach((c, i) => {
         if (seen.has(c.id)) {
-          ctx.addIssue({ code: 'custom', path: [i, 'id'], message: `Повторюваний id камери: ${c.id}` });
+          ctx.addIssue({
+            code: 'custom',
+            path: [i, 'id'],
+            message: `Повторюваний id камери: ${c.id}`,
+          });
         }
         seen.add(c.id);
       });

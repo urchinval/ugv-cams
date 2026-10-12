@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
+import { API_PREFIX } from '@ugv/shared';
 import type { AppConfig } from './config.ts';
 import type { Core } from './core.ts';
 import { registerRoutes } from './api/routes.ts';
@@ -20,7 +21,7 @@ export async function buildApp(core: Core, cfg: AppConfig): Promise<FastifyInsta
     await app.register(fastifyStatic, { root: cfg.webDir });
     // SPA fallback: anything that is not /api and not an existing file -> index.html
     app.setNotFoundHandler((req, reply) => {
-      if (req.url.startsWith('/api/')) return reply.code(404).send({ error: 'Not found' });
+      if (req.url.startsWith(`${API_PREFIX}/`)) return reply.code(404).send({ error: 'Not found' });
       return reply.sendFile('index.html');
     });
   } else {

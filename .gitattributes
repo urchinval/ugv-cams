@@ -1,0 +1,5 @@
+# LF everywhere (Prettier endOfLine: lf), regardless of core.autocrlf on Windows
+* text=auto eol=lf
+# cmd.exe needs CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf

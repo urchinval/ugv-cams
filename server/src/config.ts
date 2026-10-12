@@ -40,7 +40,9 @@ const dataDir = resolve(
       : join(homedir(), '.config', 'ugv-cams')),
 );
 
-const binDir = resolve(env.UGV_BIN_DIR ?? (isPackaged ? join(entryDir, '..', 'bin') : join(repoRoot, 'bin')));
+const binDir = resolve(
+  env.UGV_BIN_DIR ?? (isPackaged ? join(entryDir, '..', 'bin') : join(repoRoot, 'bin')),
+);
 const exe = (name: string) => join(binDir, isWindows ? `${name}.exe` : name);
 
 export const config = {
@@ -54,7 +56,9 @@ export const config = {
   runtimeDir: join(dataDir, 'runtime'),
   mtxConfigFile: join(dataDir, 'runtime', 'mediamtx.yml'),
 
-  webDir: resolve(env.UGV_WEB_DIR ?? (isPackaged ? join(entryDir, 'web') : join(repoRoot, 'web', 'dist'))),
+  webDir: resolve(
+    env.UGV_WEB_DIR ?? (isPackaged ? join(entryDir, 'web') : join(repoRoot, 'web', 'dist')),
+  ),
   mediamtxBin: resolve(env.UGV_MEDIAMTX_BIN ?? exe('mediamtx')),
   /** Bundled ffmpeg; falls back to "ffmpeg" from PATH (see mtx/ffmpeg.ts). */
   ffmpegBin: resolve(env.UGV_FFMPEG_BIN ?? exe('ffmpeg')),

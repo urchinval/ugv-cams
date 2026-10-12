@@ -1,15 +1,11 @@
 import { useLayoutEffect, useRef } from 'react';
-
-interface Props {
-  text: string;
-  onDismiss: () => void;
-}
+import type { NoticeProps } from './Notice.types.ts';
 
 /**
  * Error line for a failed action. A manual popover lives in the top layer, so it shows above
  * an open modal <dialog> (picker / editor) — a plain position:fixed element would sit under it.
  */
-export function Notice({ text, onDismiss }: Props) {
+export function Notice({ text, onDismiss }: NoticeProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {

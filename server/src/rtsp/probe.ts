@@ -14,7 +14,13 @@ const USER_AGENT = 'ugv-cams-probe';
 /** Codecs browsers can decode over WebRTC without transcoding (H.265 support is not reliable). */
 const WEBRTC_VIDEO_OK = new Set(['H264', 'VP8', 'VP9', 'AV1']);
 /** RFC 3551 static payload types that may appear without an rtpmap line. */
-const STATIC_PT: Record<string, string> = { '0': 'PCMU', '8': 'PCMA', '14': 'MPA', '26': 'JPEG', '32': 'MPV' };
+const STATIC_PT: Record<string, string> = {
+  '0': 'PCMU',
+  '8': 'PCMA',
+  '14': 'MPA',
+  '26': 'JPEG',
+  '32': 'MPV',
+};
 
 interface Target {
   host: string;
@@ -70,7 +76,10 @@ function rtspRequest(t: Target, extraHeaders: string[], deadline: number): Promi
       if (err) reject(err);
       else resolve(res!);
     };
-    const timer = setTimeout(() => finish(new ProbeError('Немає відповіді: камера недоступна або немає маршруту')), remaining);
+    const timer = setTimeout(
+      () => finish(new ProbeError('Немає відповіді: камера недоступна або немає маршруту')),
+      remaining,
+    );
 
     socket.once(t.secure ? 'secureConnect' : 'connect', () => {
       const req = [
@@ -134,7 +143,11 @@ function parseAuthParams(header: string): Record<string, string> {
 }
 
 /** Builds Authorization from WWW-Authenticate challenges (Digest preferred over Basic). */
-export function buildAuthorization(challenges: string[], t: Target, method = 'DESCRIBE'): string | null {
+export function buildAuthorization(
+  challenges: string[],
+  t: Target,
+  method = 'DESCRIBE',
+): string | null {
   const digest = challenges.find((c) => /^digest\s/i.test(c));
   if (digest) {
     const p = parseAuthParams(digest);
@@ -148,11 +161,19 @@ export function buildAuthorization(challenges: string[], t: Target, method = 'DE
       `nonce="${nonce}"`,
       `uri="${t.uri}"`,
     ];
-    const qopAuth = p.qop?.split(',').map((s) => s.trim()).includes('auth');
+    const qopAuth = p.qop
+      ?.split(',')
+      .map((s) => s.trim())
+      .includes('auth');
     if (qopAuth) {
       const nc = '00000001';
       const cnonce = randomBytes(8).toString('hex');
-      fields.push(`response="${md5(`${ha1}:${nonce}:${nc}:${cnonce}:auth:${ha2}`)}"`, 'qop=auth', `nc=${nc}`, `cnonce="${cnonce}"`);
+      fields.push(
+        `response="${md5(`${ha1}:${nonce}:${nc}:${cnonce}:auth:${ha2}`)}"`,
+        'qop=auth',
+        `nc=${nc}`,
+        `cnonce="${cnonce}"`,
+      );
     } else {
       fields.push(`response="${md5(`${ha1}:${nonce}:${ha2}`)}"`);
     }
@@ -211,10 +232,21 @@ export async function probeRtsp(url: string): Promise<ProbeResult> {
 
     if (res.status === 401) {
       if (!t.user) {
-        return result({ ok: false, status: 401, tracks: [], error: 'Камера вимагає логін і пароль (додайте user:pass@ в URL)' });
+        return result({
+          ok: false,
+          status: 401,
+          tracks: [],
+          error: 'Камера вимагає логін і пароль (додайте user:pass@ в URL)',
+        });
       }
       const auth = buildAuthorization(res.headers.get('www-authenticate') ?? [], t);
-      if (!auth) return result({ ok: false, status: 401, tracks: [], error: 'Невідомий спосіб авторизації камери' });
+      if (!auth)
+        return result({
+          ok: false,
+          status: 401,
+          tracks: [],
+          error: 'Невідомий спосіб авторизації камери',
+        });
       res = await rtspRequest(t, [`Authorization: ${auth}`], deadline);
     }
 
