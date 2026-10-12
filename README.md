@@ -88,7 +88,7 @@ scripts/  fetch-binaries, package (release zip)
 
 ## Розробка (Windows)
 
-Потрібен Node.js 22+. Команди npm краще запускати в cmd: у PowerShell npm часто блокує політика скриптів.
+Потрібен Node.js 24+ (LTS). Команди npm краще запускати в cmd: у PowerShell npm часто блокує політика скриптів.
 
 ```sh
 npm install

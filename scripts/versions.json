@@ -1,17 +1,18 @@
 {
-  "$comment": "Pinned third-party binaries for the Windows release. Bump here, CI picks it up. node: 'latest-22' resolves the newest v22.x from nodejs.org at build time, or pin e.g. '22.20.0'.",
+  "$comment": "Pinned third-party binaries for the Windows release. Bump here, CI picks it up. node: 'latest-24' resolves the newest v24.x (active LTS) from nodejs.org at build time, or pin e.g. '24.21.0'.",
   "mediamtx": {
     "version": "1.21.1",
     "url": "https://github.com/bluenviron/mediamtx/releases/download/v{version}/mediamtx_v{version}_windows_amd64.zip",
     "entry": "mediamtx.exe"
   },
   "ffmpeg": {
-    "$comment": "GPL build: libx264 is required for the H.265 -> H.264 transcode",
-    "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-win64-gpl-7.1.zip",
+    "$comment": "gyan.dev essentials (GPL, includes libx264 for the H.265 -> H.264 transcode). Versioned tags stay downloadable, unlike BtbN 'latest' whose asset names rotate.",
+    "version": "8.1.2",
+    "url": "https://github.com/GyanD/codexffmpeg/releases/download/{version}/ffmpeg-{version}-essentials_build.zip",
     "entry": "ffmpeg.exe"
   },
   "node": {
-    "version": "latest-22",
+    "version": "latest-24",
     "url": "https://nodejs.org/dist/v{version}/node-v{version}-win-x64.zip",
     "entry": "node.exe"
   }

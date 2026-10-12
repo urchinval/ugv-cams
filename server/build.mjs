@@ -10,7 +10,7 @@ await build({
   outfile: 'dist/server.cjs',
   bundle: true,
   platform: 'node',
-  target: 'node22',
+  target: 'node24',
   format: 'cjs',
   sourcemap: 'linked',
   legalComments: 'none',

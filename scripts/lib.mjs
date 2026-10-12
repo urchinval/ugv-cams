@@ -30,7 +30,7 @@ export async function download(url, dest) {
   return dest;
 }
 
-/** Newest v22.x from the official index (CI has internet; pin a version to skip this). */
+/** Newest vN.x from the official index (CI has internet; pin a version to skip this). */
 export async function resolveNodeVersion(spec) {
   const m = /^latest-(\d+)$/.exec(spec);
   if (!m) return spec;

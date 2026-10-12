@@ -40,7 +40,7 @@ await clean(runtimeDir);
 
 const manifest = [];
 manifest.push(await fetchOne('mediamtx', versions.mediamtx, BIN, versions.mediamtx.version));
-if (!args.has('--no-ffmpeg')) manifest.push(await fetchOne('ffmpeg', versions.ffmpeg, BIN));
+if (!args.has('--no-ffmpeg')) manifest.push(await fetchOne('ffmpeg', versions.ffmpeg, BIN, versions.ffmpeg.version));
 const nodeVersion = await resolveNodeVersion(versions.node.version);
 manifest.push(await fetchOne('node', versions.node, runtimeDir, nodeVersion));
 
