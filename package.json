@@ -1,6 +1,6 @@
 {
   "name": "ugv-cams",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Operator-side camera viewer for UGVs: MediaMTX (RTSP -> WebRTC) + local Node backend + React UI",
   "workspaces": [
