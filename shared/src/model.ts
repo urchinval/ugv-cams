@@ -9,6 +9,10 @@ export const STREAM_KINDS = ['sub', 'main', 'third'] as const;
 export const StreamKindSchema = z.enum(STREAM_KINDS);
 export type StreamKind = z.infer<typeof StreamKindSchema>;
 
+export const RTSP_TRANSPORTS = ['tcp', 'udp'] as const;
+export const RtspTransportSchema = z.enum(RTSP_TRANSPORTS);
+export type RtspTransport = z.infer<typeof RtspTransportSchema>;
+
 /** Stream shown on page load / model switch — always sub. */
 export const DEFAULT_STREAM: StreamKind = 'sub';
 
@@ -44,6 +48,12 @@ export const CameraSchema = z.object({
   }),
   /** H.265 (or B-frames) -> H.264 via ffmpeg on the laptop, for browser WebRTC. */
   transcode: z.boolean().default(false),
+  /**
+   * How MediaMTX pulls the camera over the tunnel. tcp: lossless, but a lost packet stalls the
+   * stream (freezes). udp: no stalls, a lost packet smears the picture until the next I-frame;
+   * needs inbound UDP through the tunnel and Windows Firewall. Old models default to tcp.
+   */
+  rtspTransport: RtspTransportSchema.default('tcp'),
 });
 export type Camera = z.infer<typeof CameraSchema>;
 

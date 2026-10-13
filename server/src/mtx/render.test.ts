@@ -21,6 +21,7 @@ const model: Model = {
       id: 'front',
       label: 'Front',
       transcode: false,
+      rtspTransport: 'tcp',
       streams: {
         sub: 'rtsp://u:p@192.168.18.106:554/cam/realmonitor?channel=1&subtype=1',
         main: 'rtsp://u:p@192.168.18.106:554/cam/realmonitor?channel=1&subtype=0',
@@ -31,6 +32,7 @@ const model: Model = {
       id: 'thermal',
       label: 'Thermal',
       transcode: true,
+      rtspTransport: 'udp',
       streams: { sub: 'rtsp://192.168.18.110:554/av0_1', main: null, third: null },
     },
   ],
@@ -77,4 +79,14 @@ test('writeQueueSize is a power of two (MediaMTX refuses to start otherwise)', (
   const { writeQueueSize } = parse(renderMediamtxConfig(null, opts));
   assert.ok(Number.isInteger(writeQueueSize) && writeQueueSize > 0);
   assert.equal(writeQueueSize & (writeQueueSize - 1), 0);
+});
+
+test('rtspTransport: udp only on the path that pulls the camera, with a big read buffer', () => {
+  const conf = parse(renderMediamtxConfig(model, opts));
+  // tcp camera: inherits pathDefaults
+  assert.equal(conf.paths.front_sub.rtspTransport, undefined);
+  // udp camera with transcode: the camera hop is _src, the ffmpeg output stays local
+  assert.equal(conf.paths.thermal_sub_src.rtspTransport, 'udp');
+  assert.ok(conf.paths.thermal_sub_src.rtspUDPReadBufferSize >= 1024 * 1024);
+  assert.equal(conf.paths.thermal_sub.rtspTransport, undefined);
 });

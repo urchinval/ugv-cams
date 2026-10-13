@@ -1,4 +1,4 @@
-import type { Model, StreamKind } from '@ugv/shared';
+import type { Model, RtspTransport, StreamKind } from '@ugv/shared';
 
 export interface ModelEditorProps {
   open: boolean;
@@ -20,6 +20,7 @@ export interface DraftCamera {
   label: string;
   streams: Record<StreamKind, string>;
   transcode: boolean;
+  rtspTransport: RtspTransport;
 }
 
 export interface Draft {

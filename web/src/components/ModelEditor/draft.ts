@@ -27,6 +27,7 @@ export function emptyCamera(taken: string[]): DraftCamera {
     label: '',
     streams: { sub: '', main: '', third: '' },
     transcode: false,
+    rtspTransport: 'tcp',
   };
 }
 
@@ -45,6 +46,7 @@ export function toDraft(m: Model | null): Draft {
         third: c.streams.third ?? '',
       },
       transcode: c.transcode,
+      rtspTransport: c.rtspTransport,
     })),
   };
 }
@@ -61,6 +63,7 @@ export function toInput(d: Draft): ModelInput {
         third: c.streams.third,
       },
       transcode: c.transcode,
+      rtspTransport: c.rtspTransport,
     })),
   };
 }

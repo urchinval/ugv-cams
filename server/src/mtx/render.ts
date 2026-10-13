@@ -1,5 +1,11 @@
 import { stringify } from 'yaml';
-import { availableStreams, playPath, sourcePath, type Model } from '@ugv/shared';
+import {
+  availableStreams,
+  playPath,
+  sourcePath,
+  type Model,
+  type RtspTransport,
+} from '@ugv/shared';
 
 export interface RenderOptions {
   apiPort: number;
@@ -15,6 +21,20 @@ const ON_DEMAND = {
   sourceOnDemandStartTimeout: '15s',
   sourceOnDemandCloseAfter: '10s', // short: stream switching releases the old one quickly
 };
+
+/**
+ * UDP pull: a 1 s Starlink stall arrives as one burst; the OS default socket buffer (~64 KB on
+ * Windows) would drop most of it on the laptop itself, so give the source a roomy one.
+ */
+const UDP_SOURCE = {
+  rtspTransport: 'udp',
+  rtspUDPReadBufferSize: 4 * 1024 * 1024,
+};
+
+/** Path that pulls the camera itself over the tunnel (transport only matters on this hop). */
+function cameraSource(url: string, transport: RtspTransport): Record<string, unknown> {
+  return { source: url, ...ON_DEMAND, ...(transport === 'udp' ? UDP_SOURCE : {}) };
+}
 
 /** H.265 -> H.264 baseline, no B-frames, ~1 s GOP at 25 fps. */
 function transcodeCmd(ffmpeg: string, srcPath: string): string {
@@ -41,7 +61,7 @@ export function renderMediamtxConfig(model: Model | null, o: RenderOptions): str
       const play = playPath(cam.id, kind);
       if (cam.transcode) {
         const src = sourcePath(cam.id, kind);
-        paths[src] = { source: url, ...ON_DEMAND };
+        paths[src] = cameraSource(url, cam.rtspTransport);
         paths[play] = {
           runOnDemand: transcodeCmd(o.ffmpeg, src),
           runOnDemandRestart: true,
@@ -49,7 +69,7 @@ export function renderMediamtxConfig(model: Model | null, o: RenderOptions): str
           runOnDemandCloseAfter: '10s',
         };
       } else {
-        paths[play] = { source: url, ...ON_DEMAND };
+        paths[play] = cameraSource(url, cam.rtspTransport);
       }
     }
   }

@@ -89,6 +89,19 @@ export function CameraCard(p: CameraCardProps) {
         </span>
       </label>
 
+      <label className="check">
+        <input
+          type="checkbox"
+          checked={c.rtspTransport === 'udp'}
+          onChange={(e) => p.onChange({ rtspTransport: e.target.checked ? 'udp' : 'tcp' })}
+        />
+        <span>
+          Тягнути камеру по UDP: менше фризів на Starlink, але втрачений пакет дає артефакти до
+          наступного I-кадру. Потрібен вхідний UDP через тунель і Windows Firewall; якщо картинки
+          немає, поверніть TCP.
+        </span>
+      </label>
+
       <QgcHint camera={c} rtspPort={p.rtspPort} />
     </li>
   );

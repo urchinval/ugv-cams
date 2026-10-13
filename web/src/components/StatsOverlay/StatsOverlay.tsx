@@ -14,11 +14,12 @@ function Warn({ on, children }: { on: boolean; children: ReactNode }) {
  * Debug numbers over a tile (toolbar toggle). Highlighted values point at the usual causes:
  * packet loss -> smearing, freezes -> stalls, long time since I-frame -> slow recovery.
  */
-export function StatsOverlay({ path, stats: s }: StatsOverlayProps) {
+export function StatsOverlay({ path, transport, stats: s }: StatsOverlayProps) {
+  const via = transport.toUpperCase();
   if (!s) {
     return (
       <div className="tile-stats" aria-hidden="true">
-        {path} · немає даних
+        {path} · {via} · немає даних
       </div>
     );
   }
@@ -26,7 +27,7 @@ export function StatsOverlay({ path, stats: s }: StatsOverlayProps) {
   return (
     <div className="tile-stats" aria-hidden="true">
       <div>
-        {path} · {s.codec ?? '?'} {size}
+        {path} · {via} · {s.codec ?? '?'} {size}
       </div>
       <div>
         {num(s.fps, 1)} fps · {num(s.kbps)} kb/s

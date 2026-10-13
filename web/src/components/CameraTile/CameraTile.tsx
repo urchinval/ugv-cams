@@ -54,7 +54,13 @@ export function CameraTile(p: CameraTileProps) {
 
       <div className="tile-label">{p.camera.label}</div>
 
-      {p.debug && <StatsOverlay path={playPath(p.camera.id, p.stream)} stats={stats} />}
+      {p.debug && (
+        <StatsOverlay
+          path={playPath(p.camera.id, p.stream)}
+          transport={p.camera.rtspTransport}
+          stats={stats}
+        />
+      )}
 
       <div className="tile-controls" onDoubleClick={(e) => e.stopPropagation()}>
         <StreamSwitch

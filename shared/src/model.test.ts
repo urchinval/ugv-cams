@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { ModelInputSchema, availableStreams, suggestCameraId } from './model.ts';
+import { CameraSchema, ModelInputSchema, availableStreams, suggestCameraId } from './model.ts';
 
 const url = 'rtsp://admin:p%40ss@192.168.18.106:554/cam/realmonitor?channel=1&subtype=1';
 
@@ -31,4 +31,10 @@ test('suggestCameraId produces unique safe ids', () => {
   assert.equal(suggestCameraId('Front Cam'), 'front_cam');
   assert.equal(suggestCameraId('Термалка'), 'cam');
   assert.equal(suggestCameraId('Front', ['front']), 'front_2');
+});
+
+test('rtspTransport defaults to tcp for models saved before the option existed', () => {
+  const cam = CameraSchema.parse({ id: 'front', label: 'Front', streams: { sub: 'rtsp://x/1' } });
+  assert.equal(cam.rtspTransport, 'tcp');
+  assert.throws(() => CameraSchema.parse({ ...cam, rtspTransport: 'multicast' }));
 });
